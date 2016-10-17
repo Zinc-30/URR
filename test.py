@@ -16,3 +16,12 @@ print s
 s.remove(1)
 print s
 
+
+x = 1 if [] else 0
+print x
+
+
+a =[1,2,3,4];
+b = a;
+a.append(5);
+print b

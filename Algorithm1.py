@@ -1,6 +1,8 @@
 import networkx as nx
+import copy
 # class Solution(object):
-def insertEvent(S, u, xplace, xtime,questId,pick):
+def insertEvent(Scopy, u, xplace, xtime,questId,pick):
+	S = copy.deepcopy(Scopy)
 	event = S[u]
 	S.remove(event)
 	newevent1 = {'startLocation':event['startLocation'],'riders':set(event['riders']),'endLocation':xplace,'deadline':xtime}
@@ -25,6 +27,8 @@ def insertEvent(S, u, xplace, xtime,questId,pick):
 	S.reverse()
 	for i in range(len(S)):
 		fTime = min(fTime,tempTime[i])
+		if fTime<0:
+			return [];
 		S[i]['flexibleTime'] = fTime;
 	S.reverse()
 	return S
@@ -66,6 +70,8 @@ def ScheduleSingleRequest(S,car,request,questId):
 		Sbest.reverse()
 		for i in range(len(Sbest)):
 			fTime = min(fTime,tempTime[i])
+			if fTime<0:
+				return [];
 			Sbest[i]['flexibleTime'] = fTime;
 		Sbest.reverse()
 		return Sbest
@@ -77,6 +83,8 @@ def ScheduleSingleRequest(S,car,request,questId):
 		for pick in waitPick:
 			if pick[1]>costIncreament:
 				break
+			if not insertEvent(S,pick[2],request[0],request[1],questId,1):
+				continue
 			tmpS = insertEvent(S,pick[2],request[0],request[1],questId,1)
 			waitDrop = validEvents(tmpS,request[3],request[2],car[1],0,questId)
 			if not waitDrop:
@@ -87,11 +95,12 @@ def ScheduleSingleRequest(S,car,request,questId):
 					continue
 				if pick[1]+drop[1]>= costIncreament:
 					break
-				Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0)
-				costIncreament = pick[1]+drop[1]
+				if insertEvent(tmpS,drop[2],request[3],request[2],questId,0):
+					Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0)
+					costIncreament = pick[1]+drop[1]
 	return Sbest
 
-#input=
+# #input=
 G = nx.Graph()
 G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
 cost = nx.shortest_path_length(G,weight='weight');
@@ -99,41 +108,40 @@ cost = nx.shortest_path_length(G,weight='weight');
 quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
 cars = [['B',2,()],['D',2,()]] 
 
-#output=
-S = []
-#event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
-print "1========="
-questId = 0;
-carId = 0;
-car = cars[carId];
-request = quests[questId];
-S=ScheduleSingleRequest(S,car,request,questId)
+# # #output=
+# S = []
+# # #event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
+# print "1========="
+# questId = 2;
+# carId = 0;
+# car = cars[carId];
+# request = quests[questId];
+# S=ScheduleSingleRequest(S,car,request,questId)
+# print S
 
-print S
+# print "2========="
+# questId = 1;
+# carId = 0;
+# car = cars[carId];
+# request = quests[questId];
+# ScheduleSingleRequest(S,car,request,questId)
+# print S
 
-print "2========="
-questId = 1;
-carId = 0;
-car = cars[carId];
-request = quests[questId];
-ScheduleSingleRequest(S,car,request,questId)
-print S
+# print "3========="
+# questId = 2;
+# carId = 0;
+# car = cars[carId];
+# request = quests[questId];
+# ScheduleSingleRequest(S,car,request,questId)
+# print S
 
-print "3========="
-questId = 2;
-carId = 0;
-car = cars[carId];
-request = quests[questId];
-ScheduleSingleRequest(S,car,request,questId)
-print S
-
-print "4========="
-questId = 3;
-carId = 0;
-car = cars[carId];
-request = quests[questId];
-ScheduleSingleRequest(S,car,request,questId)
-print S
+# print "4========="
+# questId = 3;
+# carId = 0;
+# car = cars[carId];
+# request = quests[questId];
+# ScheduleSingleRequest(S,car,request,questId)
+# print S
 
 
 
