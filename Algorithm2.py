@@ -1,13 +1,18 @@
-import networkx as nx
 import Algorithm1
-import copy
-
-G = nx.Graph()
-G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
-cost = nx.shortest_path_length(G,weight='weight');
-quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
-cars = [['B',2,()],['D',2,()]] 
-utility = [[1,2],[3,2],[1,4],[5,1]]
+import SetInfo
+print "finish import"
+G = SetInfo.G
+cost = SetInfo.cost
+quests = SetInfo.quests
+cars = SetInfo.car
+utility = SetInfo.utility
+print "finish loading"
+# G = nx.Graph()
+# G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
+# cost = nx.shortest_path_length(G,weight='weight');
+# quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
+# cars = [['B',2,()],['D',2,()]] 
+# utility = [[1,2],[3,2],[1,4],[5,1]]
 S = [[] for i in range(len(cars))]
 
 def findRiders(S):

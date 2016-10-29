@@ -1,6 +1,3 @@
-import networkx as nx
-import copy
-# class Solution(object):
 def insertEvent(Scopy, u, xplace, xtime,questId,pick):
 	S = copy.deepcopy(Scopy)
 	event = S[u]
@@ -35,6 +32,7 @@ def insertEvent(Scopy, u, xplace, xtime,questId,pick):
 
 def validEvents(S, xplace, xtime,avilabenum,pick,questId):
     """
+    event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
     """
     waitList=[]
     for ei in range(len(S)):
@@ -100,24 +98,14 @@ def ScheduleSingleRequest(S,car,request,questId):
 					costIncreament = pick[1]+drop[1]
 	return Sbest
 
-# #input=
-G = nx.Graph()
-G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
-cost = nx.shortest_path_length(G,weight='weight');
 
-quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
-cars = [['B',2,()],['D',2,()]] 
+# #input=
+
+
+
 
 # # #output=
-# S = []
-# # #event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
-# print "1========="
-# questId = 2;
-# carId = 0;
-# car = cars[carId];
-# request = quests[questId];
-# S=ScheduleSingleRequest(S,car,request,questId)
-# print S
+
 
 # print "2========="
 # questId = 1;
