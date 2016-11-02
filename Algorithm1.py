@@ -1,4 +1,13 @@
-def insertEvent(Scopy, u, xplace, xtime,questId,pick,cost):
+import copy
+import SetInfo
+cost = SetInfo.cost
+def getCost(x,y):
+	if x in cost and y in cost[x]:
+		return cost[x][y]
+	else:
+		return 1000000
+
+def insertEvent(Scopy, u, xplace, xtime,questId,pick):
 	"""
 	Scopy is original event list,
 	u is the insert position
@@ -22,8 +31,8 @@ def insertEvent(Scopy, u, xplace, xtime,questId,pick,cost):
 	eTime = event['startTime'];
 	for ei in range(u,len(S)):
 		S[ei]['startTime']=eTime;
-		eTime = eTime +  cost[S[ei]['startLocation']][S[ei]['endLocation']]
-	tempTime = [x['deadline'] - x['startTime'] - cost[x['startLocation']][x['endLocation']] for x in S];
+		eTime = eTime + getCost(S[ei]['startLocation'],S[ei]['endLocation'])
+	tempTime = [x['deadline'] - x['startTime'] - getCost(x['startLocation'],x['endLocation']) for x in S];
 	tempTime.reverse()
 	fTime = tempTime[0]
 	S.reverse()
@@ -35,7 +44,7 @@ def insertEvent(Scopy, u, xplace, xtime,questId,pick,cost):
 	S.reverse()
 	return S
 
-def validEvents(S, xplace, xtime,avilabenum,pick,questId,cost):
+def validEvents(S, xplace, xtime,avilabenum,pick,questId):
     """
     event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
     """
@@ -47,28 +56,28 @@ def validEvents(S, xplace, xtime,avilabenum,pick,questId,cost):
     		continue
     	if ei>0 and S[ei]['startTime']>xtime:
     		continue
-    	if cost[S[ei]['startLocation']][xplace]> xtime:
+    	if getCost(S[ei]['startLocation'],xplace)> xtime:
     		continue
-    	if cost[S[ei]['startLocation']][xplace]+cost[xplace][S[ei]['endLocation']]-cost[S[ei]['startLocation']][S[ei]['endLocation']]>S[ei]['flexibleTime']:
+    	if getCost(S[ei]['startLocation'],xplace)+getCost(xplace,S[ei]['endLocation'])-getCost(S[ei]['startLocation'],S[ei]['endLocation'])>S[ei]['flexibleTime']:
     		continue
-    	waitList.append((S[ei],cost[S[ei]['startLocation']][xplace]+cost[xplace][S[ei]['endLocation']]-cost[S[ei]['startLocation']][S[ei]['endLocation']],ei))
+    	waitList.append((S[ei],getCost(S[ei]['startLocation'],xplace)+getCost(xplace,S[ei]['endLocation'])-getCost(S[ei]['startLocation'],S[ei]['endLocation']),ei))
 	return waitList
 
-def ScheduleSingleRequest(S,car,request,questId,cost):
+def ScheduleSingleRequest(S,car,request,questId):
 	costIncreament = 100000;
 	Sbest=[]
 	eTime = 0
 	if S == []: 
 		event = {'startLocation':car[0],'riders':set(),'endLocation':request[0],'deadline':request[1]}
 		event['startTime'] = eTime
-		eTime = eTime + cost[event['startLocation']][event['endLocation']]
+		eTime = eTime + getCost(event['startLocation'],event['endLocation'])
 		Sbest.append(event)
 		event = {'startLocation':request[0],'riders':set([questId]),'endLocation':request[3],'deadline':request[2]}
 		event['startTime'] = eTime
-		eTime = eTime + cost[event['startLocation']][event['endLocation']]
+		eTime = eTime + getCost(event['startLocation'],event['endLocation'])
 		Sbest.append(event)
-		fTime = event['deadline'] - event['startTime'] - cost[event['startLocation']][event['endLocation']]
-		tempTime = [x['deadline'] - x['startTime'] - cost[x['startLocation']][x['endLocation']] for x in Sbest];
+		fTime = event['deadline'] - event['startTime'] - getCost(event['startLocation'],event['endLocation'])
+		tempTime = [x['deadline'] - x['startTime'] - getCost(x['startLocation'],x['endLocation']) for x in Sbest];
 		tempTime.reverse()
 		Sbest.reverse()
 		for i in range(len(Sbest)):
@@ -79,17 +88,17 @@ def ScheduleSingleRequest(S,car,request,questId,cost):
 		Sbest.reverse()
 		return Sbest
 	else:
-		waitPick = validEvents(S,request[0],request[1],car[1],1,questId,cost)
+		waitPick = validEvents(S,request[0],request[1],car[1],1,questId)
 		if not waitPick:
 			return Sbest
 		waitPick = sorted(waitPick, key=lambda e:e[1]);
 		for pick in waitPick:
 			if pick[1]>costIncreament:
 				break
-			if not insertEvent(S,pick[2],request[0],request[1],questId,1,cost):
+			if not insertEvent(S,pick[2],request[0],request[1],questId,1):
 				continue
-			tmpS = insertEvent(S,pick[2],request[0],request[1],questId,1,cost)
-			waitDrop = validEvents(tmpS,request[3],request[2],car[1],0,questId,cost)
+			tmpS = insertEvent(S,pick[2],request[0],request[1],questId,1)
+			waitDrop = validEvents(tmpS,request[3],request[2],car[1],0,questId)
 			if not waitDrop:
 				break
 			waitDrop = sorted(waitDrop, key=lambda e:e[1]);
@@ -99,7 +108,7 @@ def ScheduleSingleRequest(S,car,request,questId,cost):
 				if pick[1]+drop[1]>= costIncreament:
 					break
 				if insertEvent(tmpS,drop[2],request[3],request[2],questId,0):
-					Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0,cost)
+					Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0)
 					costIncreament = pick[1]+drop[1]
 	return Sbest
 

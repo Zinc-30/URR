@@ -1,10 +1,13 @@
 import Algorithm1
+from Algorithm1 import getCost 
+from time import clock
 import SetInfo
+import copy
 print "finish import"
 G = SetInfo.G
 cost = SetInfo.cost
 quests = SetInfo.quests
-cars = SetInfo.car
+cars = SetInfo.cars
 utility = SetInfo.utility
 print "finish loading"
 # G = nx.Graph()
@@ -47,12 +50,12 @@ def moveRider(S,ri):
 	if len(S)>0:
 		eTime = S[upId]['startTime'];
 		for i in range(upId,downId):
-			S[i+1]['startTime'] = S[i]['startTime']+cost[S[i]['startLocatioon']][S[i]['endLocation']]
+			S[i+1]['startTime'] = S[i]['startTime']+ getCost(S[i]['startLocatioon'],S[i]['endLocation'])
 		for i in range(downId,upId,-1):
 			if i<len(S)-1:
-				S[i]['flexibleTime'] = min(S[i]['deadline'] - S[i]['startTime'] - cost[S[i]['startLocation']][S[i]['endLocation']],S[i+1]['flexibleTime'])
+				S[i]['flexibleTime'] = min(S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation']),S[i+1]['flexibleTime'])
 			else:
-				S[i]['flexibleTime'] = S[i]['deadline'] - S[i]['startTime'] - cost[S[i]['startLocation']][S[i]['endLocation']];
+				S[i]['flexibleTime'] = S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation']);
 	
 	return S
 
@@ -97,6 +100,7 @@ def bilateralArrangement(cars,S,quests):
 					if utility[ri[0]][carId]<utility[questId][carId]:
 						tmpS = copy.deepcopy(S[carId]) 
 						S[carId] = moveRider(S[carId],ri[0]);
+						print " last carID",carId
 						if Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId):
 							S[carId] = Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId)
 							carList[ri[0]].append([utility[ri[0]][carId],carId]);
@@ -108,4 +112,7 @@ def bilateralArrangement(cars,S,quests):
 							S[carId] = tmpS
 	print S
 
-bilateralArrangement(cars,S,quests)
+start = clock();
+S = bilateralArrangement(cars,S,quests)
+end = clock();
+print "time:", end-start

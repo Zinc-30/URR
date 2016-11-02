@@ -23,7 +23,12 @@ print x
 
 a =[1,2,3,4];
 b = a;
+def getb(b):
+	return b;
+c = [getb(x) for x in b]
+print c
 a.append(5);
+a.append([1,2,3])
 print b
 
 
@@ -39,30 +44,31 @@ print b
 # G = readRoad('USA-road-t.BAY.gr',G)
 # print G.number_of_nodes()
 
-import SetInfo
-import Algorithm1
-G = SetInfo.G
-cost = SetInfo.cost
-quests = SetInfo.quests
-cars = SetInfo.cars
-utility = SetInfo.utility
-print G.number_of_nodes()
-questId = 0
-carId = 0
-car = cars[carId]
-request = quests[questId]
-print car
-print request
-print cost['1']['2']
-S = []
-S = Algorithm1.ScheduleSingleRequest(S,car,request,questId,cost)
-print S
+# import SetInfo
+# import Algorithm1
+# G = SetInfo.G
+# cost = SetInfo.cost
+# quests = SetInfo.quests
+# cars = SetInfo.cars
+# utility = SetInfo.utility
+# questId = 0
+# carId = 0
+# car = cars[carId]
+# request = quests[questId]
 
-class x():
-	cost = 'hah';
-	def printc(self):
-		print self.cost
+# S = []
+# S = Algorithm1.ScheduleSingleRequest(S,car,request,questId)
+# print S
 
-x1 = x()
-x1.printc() 
+# class x():
+# 	cost = 'hah';
+# 	def printc(self):
+# 		print self.cost
 
+# x1 = x()
+# x1.printc()
+
+# from Algorithm1 import getCost
+# print getCost('1','24')
+# from time import clock
+# start = clock()

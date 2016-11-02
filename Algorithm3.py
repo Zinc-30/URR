@@ -1,10 +1,12 @@
 import Algorithm1
+from Algorithm1 import getCost 
+from time import clock
 import SetInfo
 print "finish import"
 G = SetInfo.G
 cost = SetInfo.cost
 quests = SetInfo.quests
-cars = SetInfo.car
+cars = SetInfo.cars
 utility = SetInfo.utility
 print "finish loading"
 # G = nx.Graph()
@@ -18,7 +20,7 @@ S = [[] for i in range(len(cars))]
 def calCost(S):
 	costTime = 0;
 	for x in S:
-		costTime = costTime + cost[x['startLocation']][x['endLocation']]
+		costTime = costTime + getCost(x['startLocation'],x['endLocation'])
 	return costTime
 
 def efficiencyGreedy(cars,S,quests):
@@ -54,8 +56,7 @@ def efficiencyGreedy(cars,S,quests):
 					pairSet.remove(x)
 	print S
 	return S
-
-
-
-
+start = clock();
 S = efficiencyGreedy(cars,S,quests)
+end = clock();
+print "time:", end-start
