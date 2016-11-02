@@ -1,4 +1,9 @@
-def insertEvent(Scopy, u, xplace, xtime,questId,pick):
+def insertEvent(Scopy, u, xplace, xtime,questId,pick,cost):
+	"""
+	Scopy is original event list,
+	u is the insert position
+	{xplace,xtime,questId,pick} is event information
+	"""
 	S = copy.deepcopy(Scopy)
 	event = S[u]
 	S.remove(event)
@@ -30,7 +35,7 @@ def insertEvent(Scopy, u, xplace, xtime,questId,pick):
 	S.reverse()
 	return S
 
-def validEvents(S, xplace, xtime,avilabenum,pick,questId):
+def validEvents(S, xplace, xtime,avilabenum,pick,questId,cost):
     """
     event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
     """
@@ -49,7 +54,7 @@ def validEvents(S, xplace, xtime,avilabenum,pick,questId):
     	waitList.append((S[ei],cost[S[ei]['startLocation']][xplace]+cost[xplace][S[ei]['endLocation']]-cost[S[ei]['startLocation']][S[ei]['endLocation']],ei))
 	return waitList
 
-def ScheduleSingleRequest(S,car,request,questId):
+def ScheduleSingleRequest(S,car,request,questId,cost):
 	costIncreament = 100000;
 	Sbest=[]
 	eTime = 0
@@ -74,17 +79,17 @@ def ScheduleSingleRequest(S,car,request,questId):
 		Sbest.reverse()
 		return Sbest
 	else:
-		waitPick = validEvents(S,request[0],request[1],car[1],1,questId)
+		waitPick = validEvents(S,request[0],request[1],car[1],1,questId,cost)
 		if not waitPick:
 			return Sbest
 		waitPick = sorted(waitPick, key=lambda e:e[1]);
 		for pick in waitPick:
 			if pick[1]>costIncreament:
 				break
-			if not insertEvent(S,pick[2],request[0],request[1],questId,1):
+			if not insertEvent(S,pick[2],request[0],request[1],questId,1,cost):
 				continue
-			tmpS = insertEvent(S,pick[2],request[0],request[1],questId,1)
-			waitDrop = validEvents(tmpS,request[3],request[2],car[1],0,questId)
+			tmpS = insertEvent(S,pick[2],request[0],request[1],questId,1,cost)
+			waitDrop = validEvents(tmpS,request[3],request[2],car[1],0,questId,cost)
 			if not waitDrop:
 				break
 			waitDrop = sorted(waitDrop, key=lambda e:e[1]);
@@ -94,7 +99,7 @@ def ScheduleSingleRequest(S,car,request,questId):
 				if pick[1]+drop[1]>= costIncreament:
 					break
 				if insertEvent(tmpS,drop[2],request[3],request[2],questId,0):
-					Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0)
+					Sbest = insertEvent(tmpS,drop[2],request[3],request[2],questId,0,cost)
 					costIncreament = pick[1]+drop[1]
 	return Sbest
 
