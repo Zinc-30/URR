@@ -2,10 +2,11 @@ import networkx as nx
 import numpy as np
 import os
 import json
-def readRoad(filename,G):
+def readRoad(filename):
+	G = nx.Graph()
 	if os.path.exists('graph.gml'):
 		G = nx.read_gml("graph.gml")
-		print 'haha';
+		print 'give road'
 	else:	
 		for line in open(filename):
 			tmps = line.split(' ');
@@ -17,7 +18,7 @@ def readRoad(filename,G):
 def readCost(G):
 	if os.path.exists('cost.npy'):
 		cost = np.load('cost.npy').tolist()
-		print 'hah';
+		print 'give cost';
 	else:	
 		cost = nx.shortest_path_length(G,weight='weight')
 		np.save('cost.npy', np.array(cost))
@@ -33,13 +34,14 @@ def readInfo(filename,quests,cars,utility):
 			elif tmps[0] == 'u':
 				utility.append([int(x) for x in list(tmps[1:])])
 	return 0
-G = nx.Graph()
-G = readRoad('road.txt',G)
-cost = readCost(G)
-quests = []
-cars = []
-utility = []
-readInfo('info.txt',quests,cars,utility)
+# def getG():
+# 	G = nx.Graph()
+# 	G = readRoad('road.txt',G)
+# 	return G
+
+# def getCost():
+# 	cost = readCost(G)
+# 
 # quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
 # cars = [['B',2,()],['D',2,()]] 
 # quests = [['1',1000,2000,'2'],['1',7,210,'5'],['332',15,400,'24'],['546',22,723,'1']]

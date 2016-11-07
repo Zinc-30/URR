@@ -1,14 +1,15 @@
-import Algorithm1
-from Algorithm1 import getCost 
+from Algorithm1 import Algo1
 from time import clock
 import SetInfo
 import copy
 print "finish import"
-G = SetInfo.G
-cost = SetInfo.cost
-quests = SetInfo.quests
-cars = SetInfo.cars
-utility = SetInfo.utility
+
+G = SetInfo.readRoad('road.txt')
+cost = SetInfo.readCost(G)
+quests = []
+cars = []
+utility = []
+SetInfo.readInfo('info.txt',quests,cars,utility) 
 print "finish loading"
 # G = nx.Graph()
 # G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
@@ -65,7 +66,7 @@ def bilateralArrangement(cars,S,quests):
 	for li in tmpU:
 		carList.append(sorted(li, key= lambda x:x[0],reverse=True))
 	questSet = set([i for i in range(len(quests))])
-
+	a1 = Algo1(cost)
 	while questSet:
 		print questSet
 		questId = questSet.pop();
@@ -82,9 +83,9 @@ def bilateralArrangement(cars,S,quests):
 			car = cars[carId]
 			request = quests[questId]
 			print "before",S[carId]
-			if Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId):
+			if a1.ScheduleSingleRequest(S[carId],car,request,questId):
 				# print "in change"
-				S[carId] = Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId)
+				S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
 				# print S[carId]
 				arrange = 1;
 			else:
@@ -101,8 +102,8 @@ def bilateralArrangement(cars,S,quests):
 						tmpS = copy.deepcopy(S[carId]) 
 						S[carId] = moveRider(S[carId],ri[0]);
 						print " last carID",carId
-						if Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId):
-							S[carId] = Algorithm1.ScheduleSingleRequest(S[carId],car,request,questId)
+						if a1.ScheduleSingleRequest(S[carId],car,request,questId):
+							S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
 							carList[ri[0]].append([utility[ri[0]][carId],carId]);
 							carList[ri[0]] = sorted(carList[ri[0]],key= lambda x:x[0],reverse=True)
 							questSet.add(ri[0])

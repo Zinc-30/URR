@@ -1,19 +1,20 @@
 import SetInfo
-import Algorithm1
+from Algorithm1 import Algo1
 from time import clock
-G = SetInfo.G
-cost = SetInfo.cost
-quests = SetInfo.quests
-cars = SetInfo.cars
-utility = SetInfo.utility
+G = SetInfo.readRoad('road.txt')
+cost = SetInfo.readCost(G)
+quests = []
+cars = []
+utility = []
+SetInfo.readInfo('info.txt',quests,cars,utility) 
+a1 = Algo1(cost)
+
 questId = 0
 carId = 0
 car = cars[carId]
 request = quests[questId]
-
 S = []
-
 start = clock();
-S = Algorithm1.ScheduleSingleRequest(S,car,request,questId)
+S = a1.ScheduleSingleRequest(S,car,request,questId)
 end = clock();
 print "time:", end-start

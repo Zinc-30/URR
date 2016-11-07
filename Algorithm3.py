@@ -1,13 +1,13 @@
-import Algorithm1
-from Algorithm1 import getCost 
+from Algorithm1 import Algo1 
 from time import clock
 import SetInfo
 print "finish import"
-G = SetInfo.G
-cost = SetInfo.cost
-quests = SetInfo.quests
-cars = SetInfo.cars
-utility = SetInfo.utility
+G = SetInfo.readRoad('road.txt')
+cost = SetInfo.readCost(G)
+quests = []
+cars = []
+utility = []
+SetInfo.readInfo('info.txt',quests,cars,utility) 
 print "finish loading"
 # G = nx.Graph()
 # G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
@@ -16,6 +16,11 @@ print "finish loading"
 # cars = [['B',2,()],['D',2,()]] 
 # utility = [[1,2],[3,2],[1,4],[5,1]]
 S = [[] for i in range(len(cars))]
+def getCost(x,y):
+	if x in cost and y in cost[x]:
+		return cost[x][y]
+	else:
+		return 1000000
 
 def calCost(S):
 	costTime = 0;
@@ -25,11 +30,12 @@ def calCost(S):
 
 def efficiencyGreedy(cars,S,quests):
 	pairSet = [];
+	a1 = Algo1(cost)
 	for qi in range(len(quests)):
 		for ci in range(len(cars)):
-			if Algorithm1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi):
+			if a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi):
 				cost1 = calCost(S[ci]);
-				tmpS = Algorithm1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
+				tmpS = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
 				cost2 = calCost(tmpS);
 				pairSet.append([qi,ci,utility[qi][ci]*1.0/(cost2-cost1+0.01)])
 	while pairSet:
@@ -37,7 +43,7 @@ def efficiencyGreedy(cars,S,quests):
 		# print pairSet
 		qi = pairSet[0][0]
 		ci = pairSet[0][1]
-		S[ci] = Algorithm1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
+		S[ci] = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
 		del pairSet[0]
 		# print "qi,ci",qi,ci 
 
@@ -46,9 +52,9 @@ def efficiencyGreedy(cars,S,quests):
 				pairSet.remove(x)
 				continue
 			if x[1]==ci:
-				if Algorithm1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]):
+				if a1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]):
 					cost1 = calCost(S[ci]);
-					tmpS = Algorithm1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]);
+					tmpS = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]);
 					cost2 = calCost(tmpS);
 					# print "costTime",x[0],ci,cost2,cost1
 					x[2] = utility[x[0]][ci]*1.0/(cost2-cost1+0.01)
@@ -56,7 +62,8 @@ def efficiencyGreedy(cars,S,quests):
 					pairSet.remove(x)
 	print S
 	return S
-start = clock();
-S = efficiencyGreedy(cars,S,quests)
-end = clock();
-print "time:", end-start
+
+# start = clock();
+# S = efficiencyGreedy(cars,S,quests)
+# end = clock();
+# print "time:", end-start

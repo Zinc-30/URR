@@ -72,3 +72,18 @@ print b
 # print getCost('1','24')
 # from time import clock
 # start = clock()
+
+A = {'a':[[1]],'b':[[2]]}
+A['b'].append([3]);
+print A
+# import json
+# # with open('t1.json', 'w') as f:
+# # 	json.dump(A, f)
+# # 	print 'give road'
+# import pickle
+# pickle.dump(A, open("tmp.txt", "w"))
+# B = pickle.load(open("tmp.txt", "r"))
+# print B
+for x in A:
+	print len(A[x])
+print sorted(A,key = lambda x:len(x), reverse=1)
