@@ -17,4 +17,5 @@ S = []
 start = clock();
 S = a1.ScheduleSingleRequest(S,car,request,questId)
 end = clock();
+print S
 print "time:", end-start
