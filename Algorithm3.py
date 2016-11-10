@@ -18,9 +18,9 @@ def efficiencyGreedy(cost,cars,quests,utility,S):
 	for qi in range(len(quests)):
 		for ci in range(len(cars)):
 			if a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi):
-				cost1 = calCost(S[ci]);
+				cost1 = calCost(S[ci],cost);
 				tmpS = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
-				cost2 = calCost(tmpS);
+				cost2 = calCost(tmpS,cost);
 				pairSet.append([qi,ci,utility[qi][ci]*1.0/(cost2-cost1+0.01)])
 	while pairSet:
 		pairSet = sorted(pairSet,key= lambda x:x[2],reverse=True);
@@ -37,9 +37,9 @@ def efficiencyGreedy(cost,cars,quests,utility,S):
 				continue
 			if x[1]==ci:
 				if a1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]):
-					cost1 = calCost(S[ci]);
+					cost1 = calCost(S[ci],cost);
 					tmpS = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[x[0]],x[0]);
-					cost2 = calCost(tmpS);
+					cost2 = calCost(tmpS,cost);
 					# print "costTime",x[0],ci,cost2,cost1
 					x[2] = utility[x[0]][ci]*1.0/(cost2-cost1+0.01)
 				else:
