@@ -82,4 +82,3 @@ else:
 	if sys.argv[1]=='3':
 		tA3()
 
-tA3()
