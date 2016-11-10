@@ -54,5 +54,3 @@ def tA6(k):
 	print "answer is",S
 	print "time",end-start
 	return S,end-start
-
-tA1()
