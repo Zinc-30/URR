@@ -28,7 +28,7 @@ def sRoad(filename,nodes):
 		i = i+1
 		tmps = line[:-1].split(' ')
 		if tmps[0] == 'a' and tmps[1] in nodeid and tmps[2] in nodeid:
-				G.add_edge(nodeid.index(tmps[1]), nodeid.index(tmps[2]), weight=int(tmps[3]))
+				G.add_edge(nodeid.index(tmps[1]), nodeid.index(tmps[2]), weight=int(tmps[3])//10)
 	return G
 
 def sQuest(filename,area,nodes):
@@ -49,7 +49,7 @@ def sQuest(filename,area,nodes):
 					node1 = array1.index(mindist1)
 					node2 = array2.index(mindist2)
 					time1 = randint(600,1200)
-					time2 = int(time1+1.5*int(tmps[8]))
+					time2 = int(time1+10*int(tmps[8]))
 					quest.append([node1,time1,time2,node2])
 		i = i+1
 		if i>3000:
@@ -68,12 +68,12 @@ def sCars(num,limit,room):
 
 
 # def sCars(nums):
-area = [-74000000,40730000,-73900000,40740000] #664,34
+# area = [-74000000,40730000,-73900000,40740000] #664,34
 # area = [-74000000,40730000,-73900000,40750000] 1482,49
 # area = [-74000000,40730000,-73900000,40760000] 2164,151
 # area = [-74100000,40720000,-73800000,40770000] 9531,449
 # area = [-74000000,40710000,-73800000,40770000] 8801,1121
-# area = [-74000000,40730000,-73800000,40770000] 5636,941
+area = [-74000000,40730000,-73800000,40770000] 5636,941
 print "select area",area
 
 nodes = sNodes('data/USA-road-d.NY.co',area)
