@@ -21,20 +21,20 @@ def readCost():
 
 def readQuests():
 	if os.path.exists('data/quests.npy'):
-		return np.load('data/quests.npy').tolist()
 		print 'read request data'
+		return np.load('data/quests.npy').tolist()
 	else:
 		print 'no request data'
 def readCars():
 	if os.path.exists('data/cars.npy'):
-		return np.load('data/cars.npy').tolist()
 		print 'read cars data'
+		return np.load('data/cars.npy').tolist()
 	else:
 		print 'no cars data'
 def readUtility():
 	if os.path.exists('data/utility.npy'):
-		return np.load('data/utility.npy').tolist()
 		print 'read utility data'
+		return np.load('data/utility.npy').tolist()
 	else:
 		print 'no utility data'
 
