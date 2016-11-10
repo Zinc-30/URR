@@ -50,12 +50,11 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 	questSet = set([i for i in range(len(quests))])
 	a1 = Algo1(cost)
 	while questSet:
-		# print questSet
 		questId = questSet.pop();
 		# print "questId",questId
 		arrange = 0;
 		while not arrange:
-			if carList[questId]:
+			if questId in carList and carList[questId]:
 				carId = carList[questId][0][1]
 			else:
 				# print carList[questId],questId

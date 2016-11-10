@@ -59,11 +59,11 @@ def sQuest(filename,area,nodes):
 	# 		f.write('p',x[0],x[1],x[2],x[3])
 	return quest
 
-def sCars(num,nodes,room):
+def sCars(num,limit,room):
 	cars = []
 	for i in range(num):
-		lid = randint(0,len(nodes))
-		cars.append([nodes[lid][0],room])
+		lid = randint(0,limit)
+		cars.append([lid,room])
 	return cars
 
 
@@ -85,7 +85,7 @@ print "generate into G.edges num",len(G.edges())
 quest = sQuest('data/trip_data_2.csv',area,nodes)
 print "quest num",len(quest)
 
-cars = sCars(300,nodes,3)
+cars = sCars(300,len(nodes),3)
 print "cars num",300
 
 cost = nx.shortest_path_length(G,weight='weight')

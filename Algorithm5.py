@@ -41,6 +41,9 @@ class Algo5():
 		for u in set(self.G.nodes())-kSpc:
 			x = min([[self.getCost(u,v),v] for v in kSpc])
 			area[x[1]].add(u);
+		filename = 'data/area-'+str(k)+'.txt'
+		pickle.dump(area, open(filename, 'w'))
+		print 'write area data'
 		return area
 
 # G = rd.readRoad()

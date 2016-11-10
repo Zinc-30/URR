@@ -3,11 +3,11 @@ import os
 import Algorithm3
 import Algorithm5
 
-def getArea(G,k):
+def getArea(G,k,cost):
 	filename = 'data/area-'+str(k)+'.txt'
 	if os.path.exists(filename):
 		area = pickle.load(open(filename, 'r'))
-		print 'give area data'
+		print 'get area data'
 	else:
 		a5 = Algorithm5.Algo5(G,cost)
 		area = a5.areaConstruction(k)
@@ -17,7 +17,7 @@ def getArea(G,k):
 def groupScheduling(G,k,cost,cars,quests,utility,S):
 	g={}
 	grest = []
-	area = getArea(G,k)
+	area = getArea(G,k,cost)
 	for q in quests:
 		for ax in area:
 			flag = 1
@@ -30,8 +30,8 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 		if flag:
 			grest.append(q)
 	gnew = [g[t] for t in sorted(g,key = lambda x:len(g[x]),reverse=1)]
-	print "grest",grest
-	print "gnew",gnew
+	# print "grest",grest
+	# print "gnew",gnew
 	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S)
 	for qx in gnew:
 		S = Algorithm3.efficiencyGreedy(cost,cars,qx,utility,S)
