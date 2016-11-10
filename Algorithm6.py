@@ -2,6 +2,7 @@ import pickle
 import os
 import Algorithm3
 import Algorithm5
+from time import clock
 
 def getArea(G,k,cost):
 	filename = 'data/area-'+str(k)+'.txt'
@@ -18,6 +19,7 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	g={}
 	grest = []
 	area = getArea(G,k,cost)
+	start = clock()
 	for q in quests:
 		for ax in area:
 			flag = 1
@@ -35,6 +37,8 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S)
 	for qx in gnew:
 		S = Algorithm3.efficiencyGreedy(cost,cars,qx,utility,S)
+	end = clock()
+	print "time of 6:",end - start
 	return S
 
 

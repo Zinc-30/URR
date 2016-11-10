@@ -73,7 +73,7 @@ def sCars(num,limit,room):
 # area = [-74000000,40730000,-73900000,40760000] 2164,151
 # area = [-74100000,40720000,-73800000,40770000] 9531,449
 # area = [-74000000,40710000,-73800000,40770000] 8801,1121
-area = [-74000000,40730000,-73800000,40770000] 5636,941
+area = [-74000000,40730000,-73800000,40770000] #5636,941
 print "select area",area
 
 nodes = sNodes('data/USA-road-d.NY.co',area)
@@ -83,15 +83,15 @@ G = sRoad('data/USA-road-d.NY.gr',nodes)
 print "generate into G.node num",len(G.nodes())
 print "generate into G.edges num",len(G.edges())
 
+cost = nx.shortest_path_length(G,weight='weight')
+print "calc cost distance between nodes"
+
 quest = sQuest('data/trip_data_2.csv',area,nodes)
 print "quest num",len(quest)
 
 numCars = 100
 cars = sCars(numCars,len(nodes),3)
 print "cars num",numCars
-
-cost = nx.shortest_path_length(G,weight='weight')
-print "calc cost distance between nodes"
 
 utility = [[1 for i in range(len(cars))] for j in range(len(quest))]
 print "generate utility"
@@ -103,5 +103,3 @@ np.save('data/nodes.npy', np.array(nodes))
 np.save('data/utility.npy', np.array(utility))
 nx.write_gml(G,"data/graph.gml")
 print "finish save data"
-
-
