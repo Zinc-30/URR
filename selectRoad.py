@@ -28,7 +28,7 @@ def sRoad(filename,nodes):
 		i = i+1
 		tmps = line[:-1].split(' ')
 		if tmps[0] == 'a' and tmps[1] in nodeid and tmps[2] in nodeid:
-				G.add_edge(nodeid.index(tmps[1]), nodeid.index(tmps[2]), weight=int(tmps[3])//10)
+				G.add_edge(nodeid.index(tmps[1]), nodeid.index(tmps[2]), weight=int(tmps[3]))
 	return G
 
 def sQuest(filename,area,nodes):
@@ -49,7 +49,7 @@ def sQuest(filename,area,nodes):
 					node1 = array1.index(mindist1)
 					node2 = array2.index(mindist2)
 					time1 = randint(600,1200)
-					time2 = int(time1+10*int(tmps[8]))
+					time2 = int(time1+1.5*int(tmps[8]))
 					quest.append([node1,time1,time2,node2])
 		i = i+1
 		if i>3000:
@@ -59,48 +59,37 @@ def sQuest(filename,area,nodes):
 	# 		f.write('p',x[0],x[1],x[2],x[3])
 	return quest
 
-def sCars(num,limit,room):
+def sCars(num,nodes,room):
 	cars = []
 	for i in range(num):
-		lid = randint(0,limit)
-		cars.append([lid,room])
+		lid = randint(0,len(nodes))
+		cars.append([nodes[lid][0],room])
 	return cars
 
 
 # def sCars(nums):
-# area = [-74000000,40730000,-73900000,40740000] #664,34
 # area = [-74000000,40730000,-73900000,40750000] 1482,49
 # area = [-74000000,40730000,-73900000,40760000] 2164,151
 # area = [-74100000,40720000,-73800000,40770000] 9531,449
 # area = [-74000000,40710000,-73800000,40770000] 8801,1121
-
-area = [-74000000,40730000,-73800000,40770000] #5636,941
-print "select area",area
-
+area = [-74000000,40730000,-73800000,40770000]
 nodes = sNodes('data/USA-road-d.NY.co',area)
-print "slect node num",len(nodes)
-
+print "node num",len(nodes)
 G = sRoad('data/USA-road-d.NY.gr',nodes)
-print "generate into G.node num",len(G.nodes())
-print "generate into G.edges num",len(G.edges())
-
-cost = nx.shortest_path_length(G,weight='weight')
-print "calc cost distance between nodes"
+print len(G.nodes())
 
 quest = sQuest('data/trip_data_2.csv',area,nodes)
 print "quest num",len(quest)
+# cars = sCars(300,nodes,3)
 
-numCars = 100
-cars = sCars(numCars,len(nodes),3)
-print "cars num",numCars
-
-utility = [[1 for i in range(len(cars))] for j in range(len(quest))]
-print "generate utility"
-
+cost = nx.shortest_path_length(G,weight='weight')
 np.save('data/cost.npy', np.array(cost))
-np.save('data/quests.npy', np.array(quest))
-np.save('data/cars.npy', np.array(cars))
-np.save('data/nodes.npy', np.array(nodes))
-np.save('data/utility.npy', np.array(utility))
+# np.save('data/quests.npy', np.array(quest))
+# np.save('data/cars.npy', np.array(cars))
+# np.save('data/nodes.npy', np.array(nodes))
 nx.write_gml(G,"data/graph.gml")
-print "finish save data"
+
+
+# print open('data/trip_data_2.csv','r')
+
+
