@@ -81,7 +81,3 @@ else:
 		tA2()
 	if sys.argv[1]=='3':
 		tA3()
-<<<<<<< HEAD
-=======
-
->>>>>>> cd3d3d9be7120a0e0a3a98c9abb9d0aa5bbfbd85
