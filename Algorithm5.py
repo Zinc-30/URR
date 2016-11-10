@@ -1,5 +1,6 @@
 import networkx as nx
 import readData as rd
+import pickle
 class Algo5():
 	def __init__(self,G,cost):
 		if G:
