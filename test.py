@@ -71,7 +71,7 @@ else:
 			print "in test 1: input requestid,carid"
 		else:
 			tA1(int(sys.argv[2]),int(sys.argv[3]))
-	if sys.argv[1]=='6' or sys.argv[1]=='6':
+	if sys.argv[1]=='5' or sys.argv[1]=='6':
 		if len(sys.argv)<3:
 			print "in test 5,6: input k of k-SPC"
 		else:
