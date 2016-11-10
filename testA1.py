@@ -3,12 +3,11 @@ from Algorithm1 import Algo1
 from time import clock
 G = SetInfo.readRoad('road.txt')
 cost = SetInfo.readCost(G)
-quests = []
-cars = []
-utility = []
-SetInfo.readInfo('info.txt',quests,cars,utility) 
-a1 = Algo1(cost)
+quests = SetInfo.readQuests()
+cars = SetInfo.readCars()
+utility = SetInfo.readUtility()
 
+a1 = Algo1(cost)
 questId = 0
 carId = 0
 car = cars[carId]

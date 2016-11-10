@@ -4,36 +4,37 @@ import os
 import json
 def readRoad(filename):
 	G = nx.Graph()
-	if os.path.exists('graph.gml'):
-		G = nx.read_gml("graph.gml")
+	if os.path.exists('data/graph.gml'):
+		G = nx.read_gml("data/graph.gml")
 		print 'give road'
 	else:	
 		for line in open(filename):
 			tmps = line.split(' ');
 			if tmps[0] == 'a':
 				G.add_edge(tmps[1], tmps[2], weight=int(tmps[3]))
-		nx.write_gml(G,"graph.gml")
+		nx.write_gml(G,"data/graph.gml")
 	return G
 
 def readCost(G):
-	if os.path.exists('cost.npy'):
-		cost = np.load('cost.npy').tolist()
+	if os.path.exists('data/cost.npy'):
+		cost = np.load('data/cost.npy').tolist()
+		print len(cost)
 		print 'give cost';
 	else:	
 		cost = nx.shortest_path_length(G,weight='weight')
-		np.save('cost.npy', np.array(cost))
+		np.save('data/cost.npy', np.array(cost))
 	return cost
 
-def readInfo(filename,quests,cars,utility):
-	for line in open(filename):
-			tmps = line[:-1].split(' ');
-			if tmps[0] == 'q':
-				quests.append([tmps[1],int(tmps[2]),int(tmps[3]),tmps[4]])
-			elif tmps[0] == 'c':
-				cars.append([tmps[1],int(tmps[2]),()])
-			elif tmps[0] == 'u':
-				utility.append([int(x) for x in list(tmps[1:])])
-	return 0
+def readQuests():
+	if os.path.exists('data/quests.npy'):
+		return np.load('data/quests.npy').tolist()
+def readCars():
+	if os.path.exists('data/cars.npy'):
+		return np.load('data/cars.npy').tolist()
+def readUtility():
+	if os.path.exists('data/utility.npy'):
+		return np.load('data/utility.npy').tolist()
+
 # def getG():
 # 	G = nx.Graph()
 # 	G = readRoad('road.txt',G)

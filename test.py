@@ -87,3 +87,12 @@ print A
 for x in A:
 	print len(A[x])
 print sorted(A,key = lambda x:len(x), reverse=1)
+nodes = [[1,2,3],[2,3,4]]
+
+v = min([(1-x[1])*(1-x[1])+(2-x[2])*(2-x[2]) for x in nodes])
+print v
+print v*v
+
+x = ['1','2','3','4']
+print '1' in x
+
