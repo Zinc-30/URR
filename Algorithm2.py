@@ -1,23 +1,5 @@
 from Algorithm1 import Algo1
-from time import clock
-import SetInfo
 import copy
-print "finish import"
-
-G = SetInfo.readRoad('road.txt')
-cost = SetInfo.readCost(G)
-quests = []
-cars = []
-utility = []
-SetInfo.readInfo('info.txt',quests,cars,utility) 
-print "finish loading"
-# G = nx.Graph()
-# G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
-# cost = nx.shortest_path_length(G,weight='weight');
-# quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
-# cars = [['B',2,()],['D',2,()]] 
-# utility = [[1,2],[3,2],[1,4],[5,1]]
-S = [[] for i in range(len(cars))]
 
 def findRiders(S):
 	Riders = set()
@@ -60,7 +42,7 @@ def moveRider(S,ri):
 	
 	return S
 
-def bilateralArrangement(cars,S,quests):
+def bilateralArrangement(cost,cars,quests,utility,S):
 	tmpU = [[[carU,rider.index(carU)] for carU in rider] for rider in utility]
 	carList = []
 	for li in tmpU:
@@ -68,9 +50,9 @@ def bilateralArrangement(cars,S,quests):
 	questSet = set([i for i in range(len(quests))])
 	a1 = Algo1(cost)
 	while questSet:
-		print questSet
+		# print questSet
 		questId = questSet.pop();
-		print "questId",questId
+		# print "questId",questId
 		arrange = 0;
 		while not arrange:
 			if carList[questId]:
@@ -79,10 +61,10 @@ def bilateralArrangement(cars,S,quests):
 				# print carList[questId],questId
 				break
 			carList[questId].remove(carList[questId][0])
-			print "carId",carId
+			# print "carId",carId
 			car = cars[carId]
 			request = quests[questId]
-			print "before",S[carId]
+			# print "before",S[carId]
 			if a1.ScheduleSingleRequest(S[carId],car,request,questId):
 				# print "in change"
 				S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
@@ -91,7 +73,7 @@ def bilateralArrangement(cars,S,quests):
 			else:
 				# print "after",S[carId]
 				riderSet = findRiders(S[carId]);
-				print "riderSet",riderSet
+				# print "riderSet",riderSet
 				riList = []
 				while riderSet:
 					ri = riderSet.pop();
@@ -101,7 +83,7 @@ def bilateralArrangement(cars,S,quests):
 					if utility[ri[0]][carId]<utility[questId][carId]:
 						tmpS = copy.deepcopy(S[carId]) 
 						S[carId] = moveRider(S[carId],ri[0]);
-						print " last carID",carId
+						# print " last carID",carId
 						if a1.ScheduleSingleRequest(S[carId],car,request,questId):
 							S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
 							carList[ri[0]].append([utility[ri[0]][carId],carId]);
@@ -111,9 +93,4 @@ def bilateralArrangement(cars,S,quests):
 							break
 						else:
 							S[carId] = tmpS
-	print S
 
-start = clock();
-S = bilateralArrangement(cars,S,quests)
-end = clock();
-print "time:", end-start

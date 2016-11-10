@@ -1,34 +1,18 @@
 from Algorithm1 import Algo1 
-from time import clock
-import SetInfo
-print "finish import"
-G = SetInfo.readRoad('road.txt')
-cost = SetInfo.readCost(G)
-quests = []
-cars = []
-utility = []
-SetInfo.readInfo('info.txt',quests,cars,utility) 
-print "finish loading"
-# G = nx.Graph()
-# G.add_weighted_edges_from([('A','B',1),('B','E',2),('E','H',1),('E','F',1),('F','H',2),('F','G',2),('G','H',3),('D','G',1),('A','D',2),('A','C',1),('C','F',5)])	
-# cost = nx.shortest_path_length(G,weight='weight');
-# quests = [['A',4,10,'H'],['F',7,10,'H'],['E',5,10,'G'],['G',2,7,'E']]
-# cars = [['B',2,()],['D',2,()]] 
-# utility = [[1,2],[3,2],[1,4],[5,1]]
-S = [[] for i in range(len(cars))]
-def getCost(x,y):
+
+def getCost(x,y,cost):
 	if x in cost and y in cost[x]:
 		return cost[x][y]
 	else:
 		return 1000000
 
-def calCost(S):
+def calCost(S,cost):
 	costTime = 0;
 	for x in S:
-		costTime = costTime + getCost(x['startLocation'],x['endLocation'])
+		costTime = costTime + getCost(x['startLocation'],x['endLocation'],cost)
 	return costTime
 
-def efficiencyGreedy(cars,S,quests):
+def efficiencyGreedy(cost,cars,quests,utility,S):
 	pairSet = [];
 	a1 = Algo1(cost)
 	for qi in range(len(quests)):
@@ -60,10 +44,10 @@ def efficiencyGreedy(cars,S,quests):
 					x[2] = utility[x[0]][ci]*1.0/(cost2-cost1+0.01)
 				else:
 					pairSet.remove(x)
-	print S
+	# print S
 	return S
 
 # start = clock();
-# S = efficiencyGreedy(cars,S,quests)
+# S = efficiencyGreedy(cost,cars,quests,S)
 # end = clock();
 # print "time:", end-start

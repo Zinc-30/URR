@@ -1,34 +1,23 @@
-import networkx as nx
-import SetInfo
 import pickle
 import os
 import Algorithm3
 import Algorithm5
 
-G = SetInfo.readRoad('road.txt')
-cost = SetInfo.readCost(G)
-quests = []
-cars = []
-utility = []
-SetInfo.readInfo('info.txt',quests,cars,utility) 
-print "finish loading"
-S = [[] for i in range(len(cars))]
-
 def getArea(G,k):
-	if os.path.exists('area.txt'):
-		area = pickle.load(open("area.txt", "r"))
-		print 'give area'
+	filename = 'data/area-'+str(k)+'.txt'
+	if os.path.exists(filename):
+		area = pickle.load(open(filename, 'r'))
+		print 'give area data'
 	else:
 		a5 = Algorithm5.Algo5(G,cost)
 		area = a5.areaConstruction(k)
-		pickle.dump(area, open("area.txt", "w"))
-		print 'write area'
+		pickle.dump(area, open(filename, 'w'))
+		print 'write area data'
 	return area
-
-def groupScheduling(G,S,cars,quests):
+def groupScheduling(G,k,cost,cars,quests,utility,S):
 	g={}
 	grest = []
-	area = getArea(G,3)
+	area = getArea(G,k)
 	for q in quests:
 		for ax in area:
 			flag = 1
@@ -43,13 +32,12 @@ def groupScheduling(G,S,cars,quests):
 	gnew = [g[t] for t in sorted(g,key = lambda x:len(g[x]),reverse=1)]
 	print "grest",grest
 	print "gnew",gnew
-	S = Algorithm3.efficiencyGreedy(cars,S,grest)
+	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S)
 	for qx in gnew:
-		S = Algorithm3.efficiencyGreedy(cars,S,qx)
+		S = Algorithm3.efficiencyGreedy(cost,cars,qx,utility,S)
 	return S
 
-S = groupScheduling(G,S,cars,quests)
-print S
+
 
 
 

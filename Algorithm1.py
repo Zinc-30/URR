@@ -1,13 +1,13 @@
 import copy
-import SetInfo
+import readData as rd
 class Algo1():
 	
 	def __init__(self,cost):
 		if cost:
 			self.cost = cost
 		else:
-			G = SetInfo.readRoad('road.txt')
-			self.cost = SetInfo.readCost(G)
+			G = rd.readRoad()
+			self.cost = rd.readCost()
 
 
 	def getCost(self,x,y):
