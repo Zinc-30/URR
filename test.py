@@ -8,9 +8,7 @@ from time import clock
 import sys
 
 G = rd.readRoad()
-cost = {'1':{'2':5}}
-print cost['1']['2']
-# rd.readCost()
+cost = rd.readCost()
 quests = rd.readQuests()
 cars = rd.readCars()
 utility = rd.readUtility()
