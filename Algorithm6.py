@@ -52,6 +52,7 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	g={}
 	grest = []
 	area = getArea(G,k,cost)
+	print len(area)
 	areadict = getDict(k)
 	radius = getRadius(k)
 	for q in quests:
@@ -62,9 +63,9 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 			g[ax].append(q)
 		else:
 			grest.append(q)
-	gnew = [[g[t],t] for t in sorted(g,key = lambda x:len(g[x]),reverse=1)]
-	# print "grest",grest
-	# print "gnew",gnew
+	gnew = [[g[t],areadict[g[t][0][0]]] for t in sorted(g,key = lambda x:len(g[x]),reverse=1)]
+	print "grest",len(grest)
+	print "gnew",len(quests)-len(grest)
 	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S)
 	for gx in gnew:
 		carc = purnCars(gx[0],gx[1],cars,areadict,radius,cost)
