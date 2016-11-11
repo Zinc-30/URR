@@ -58,7 +58,8 @@ class Algo5():
 		filename = 'data/areaR-'+str(k)+'.npy'
 		pickle.dump(radius, open(filename, 'w'))
 		print 'write area data'
-		return area
+		print len(area)
+                return area
 
 # G = rd.readRoad()
 # cost = rd.readCost()
