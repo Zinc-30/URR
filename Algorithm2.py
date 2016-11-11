@@ -47,7 +47,7 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 	carList = []
 	for li in tmpU:
 		carList.append(sorted(li, key= lambda x:x[0],reverse=True))
-	questSet = set([i for i in range(len(quests))])
+	questSet = set(range(len(quests)))
 	a1 = Algo1(cost)
 	while questSet:
 		questId = questSet.pop();
@@ -92,4 +92,5 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 							break
 						else:
 							S[carId] = tmpS
+	return S
 
