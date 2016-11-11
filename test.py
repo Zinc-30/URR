@@ -9,20 +9,20 @@ import sys
 
 G = rd.readRoad()
 cost = rd.readCost()
-quests
-cars
-utility
+quests = rd.readQuests(3,5)
+cars = rd.readCars(10,3)
+utility = rd.readUtility(3,10)
 
 def calsum(S):
-	sum = 0;
+    sum = 0;
     global utility
     for (i,tmps) in enumerate(S):
-    	riders = set()
-		for x in tmps:
-			riders = riders|x['riders']
-		for r in riders:
-			sum = sum + utility[r][i]
-	return sum
+        riders = set()
+	for x in tmps:
+	    riders = riders|x['riders']
+	for r in riders:
+	    sum = sum + utility[r][i]
+    return sum
 
 def tA1(questId,carId):
 	a1 = Algo1(cost)
@@ -33,7 +33,7 @@ def tA1(questId,carId):
 	ans = a1.ScheduleSingleRequest(tmpS,car,request,questId)
 	end = clock();
 	time = end-start
-	print "answer is ",ans
+	#print "answer is ",ans
 	print "time:", time
 	return tmpS,time
 
@@ -49,7 +49,7 @@ def tA2():
 	time = end-start
 	sumu = calsum(ans)
 	print "================A2================="
-	print "answer is ",ans
+	#print "answer is ",ans
 	print "time A2:", time
 	print "sum utility", sumu
 	return ans,time,sumu
@@ -66,20 +66,17 @@ def tA3():
 	time = end-start
 	sumu = calsum(ans)
 	print "================A3================="
-	print "answer is ",ans
+	#print "answer is ",ans
 	print "time A2:", time
 	print "sum utility", sumu
 	return ans,time,sumu
 
 def tA5(k):
-	global utility
 	global cost
-	global quests
-	global cars
 	global G
 	a5 = Algo5(G,cost)
 	area = a5.areaConstruction(k)
-	print "area is",area
+	#print "area is",area
 	return area
 
 def tA6(k):
@@ -95,7 +92,7 @@ def tA6(k):
 	time = end-start
 	sumu = calsum(ans)
 	print "================A6================="
-	print "answer is ",ans
+	#print "answer is ",ans
 	print "time A2:", time
 	print "sum utility", sumu
 	return ans,time,sumu
@@ -136,6 +133,7 @@ if __name__ == "__main__":
 	numc = 10
 	pt = 5
 	roomc = 3
+        tA5(10)
 	for pt in [0,15,10,5]:
 		quests = rd.readQuests(3,pt)
 		test(numq,numc,pt,roomc)

@@ -60,7 +60,7 @@ def sQuest(filename,area,nodes,times,pt1):
 			# 	if mindist1<limit and mindist2<limit:
 			# 		node1 = array1.index(mindist1)
 			# 		node2 = array2.index(mindist2)
-	for line in range(1000)
+        for line in range(1000):
 		for k in range(times):
 			time1 = randint(pt1+1,pt1+300)
 			time2 = int(time1+5*randint(pt1,3*pt1))
