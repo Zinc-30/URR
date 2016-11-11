@@ -43,6 +43,7 @@ def tA2():
 	global quests
 	global cars
 	S = [[] for i in range(len(cars))]
+	print "begin"
 	start = clock()
 	ans = A2.bilateralArrangement(cost,cars,quests,utility,S)
 	end = clock()
@@ -133,36 +134,36 @@ if __name__ == "__main__":
 	numc = 10
 	pt = 5
 	roomc = 3
-	tA5(10)
-	for pt in [0,15,10,5]:
-		quests = rd.readQuests(3,pt)
-		test(numq,numc,pt,roomc)
+	# BtA2()
+	# for pt in [0,15,10,5]:
+	# 	quests = rd.readQuests(3,pt)
+	# 	test(numq,numc,pt,roomc)
 
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3	
-	for roomc in [2,5,4,3]:
-		cars = rd.readCars(10,roomc)
-		test(numq,numc,pt,roomc)
+	# numq = 3
+	# numc = 10
+	# pt = 5
+	# roomc = 3	
+	# for roomc in [2,5,4,3]:
+	# 	cars = rd.readCars(10,roomc)
+	# 	test(numq,numc,pt,roomc)
 
-
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3
+	# numq = 3
+	# numc = 10
+	# pt = 5
+	# roomc = 3
 	
-	for numq in [1,5,8,10,3]:
-		quests = rd.readQuests(numq,5)
-		utility = rd.readUtility(numq,10)
-		test(numq,numc,pt,roomc)
+	# for numq in [1,5,8,10,3]:
+	# 	quests = rd.readQuests(numq,5)
+	# 	utility = rd.readUtility(numq,10)
+	# 	test(numq,numc,pt,roomc)
 	
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3
+	# numq = 3
+	# numc = 10
+	# pt = 5
+	# roomc = 3
 
-	for numc in [5,8,50,30,10]:
-		utility = rd.readUtility(3,numc)
-		cars = rd.readCars(numc,3)
-		test(numq,numc,pt,roomc)
+	# for numc in [5,8,50,30,10]:
+	# 	utility = rd.readUtility(3,numc)
+	# 	cars = rd.readCars(numc,3)
+	# 	test(numq,numc,pt,roomc)
+tA2()
