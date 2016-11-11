@@ -123,17 +123,22 @@ def tA6(k):
 
 def test(numq,numc,pt,roomc):
 	print "==============",numq,numc,pt,roomc,"============" 
-	tA2()
-	tA3()
-	tA6(10)
-	return 0
+	result = []
+        result.append([numq,numc,pt,roomc])
+        ans,time,sumu = tA2()
+        result.append([time,sumu])
+	ans,time,sumu = tA3()
+	result.append([time,sumu])
+        ans,time,sumu = tA6(10)
+        result.append([time,sumu])
+        return result
 
 if __name__ == "__main__":
 	numq = 3
 	numc = 10
 	pt = 5
 	roomc = 3
-#        tA5(10)
+#       tA5(10)
 	for pt in [0,15,10,5]:
 		quests = rd.readQuests(3,pt)
 		test(numq,numc,pt,roomc)
@@ -144,7 +149,8 @@ if __name__ == "__main__":
 	roomc = 3	
 	for roomc in [2,5,4,3]:
 		cars = rd.readCars(10,roomc)
-		test(numq,numc,pt,roomc)
+                if roomc!=3:
+                    test(numq,numc,pt,roomc)
 
 
 	numq = 3
@@ -155,7 +161,8 @@ if __name__ == "__main__":
 	for numq in [1,5,8,10,3]:
 		quests = rd.readQuests(numq,5)
 		utility = rd.readUtility(numq,10)
-		test(numq,numc,pt,roomc)
+		if 
+                test(numq,numc,pt,roomc)
 	
 	numq = 3
 	numc = 10
