@@ -141,21 +141,21 @@ if __name__ == "__main__":
 	roomc = 3
 	result = []
 	# tA5(30)
-	for pt in [0,15,10,5]:
-		quests = rd.readQuests(3,pt)
-		result.append(test(numq,numc,pt,roomc))
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3	
-	for roomc in [2,5,4,3]:
-		cars = rd.readCars(10,roomc)
-		if roomc!=3:
-			result.append(test(numq,numc,pt,roomc))
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3
+#	for pt in [0,10,5]:
+#		quests = rd.readQuests(3,pt)
+#		result.append(test(numq,numc,pt,roomc))
+#	numq = 3
+#	numc = 10
+#	pt = 5
+#	roomc = 3	
+#	for roomc in [2,5,4,3]:
+#		cars = rd.readCars(10,roomc)
+#		if roomc!=3:
+#			result.append(test(numq,numc,pt,roomc))
+#	numq = 3
+#	numc = 10
+#	pt = 5
+#	roomc = 3
 	for numq in [1,5,8,10,3]:
 		quests = rd.readQuests(numq,5)
 		utility = rd.readUtility(numq,10)
