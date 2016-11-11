@@ -37,13 +37,15 @@ def getRadius(k):
 	else:
 		print 'no dict data'
 
-def purnCars(quests,cars,areadict,radius):
+def purnCars(quests,cars,areadict,radius,cost):
 	carc = []
-	for q in quests:
-		center = areadict[q[0]]
-		for car in cars:
-			if getCost(car[0],center,cost)<q[1]+radius[center]:
-				carc.append(car)
+	for car in cars:
+            for q in quests:
+                if q[0] in areadict:
+                    center = areadict[q[0]]
+		    if center in radius and getCost(car[0],center,cost)<q[1]+radius[center]:
+			    carc.append(car)
+                            break
 	return carc
 
 def groupScheduling(G,k,cost,cars,quests,utility,S):
@@ -52,9 +54,8 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	area = getArea(G,k,cost)
 	areadict = getDict(k)
 	radius = getRadius(k)
-	start = clock()
 	for q in quests:
-		if areadict[q[0]] == areadict[q[3]]:
+		if q[0] in areadict and q[3] in areadict and areadict[q[0]] == areadict[q[3]]:
 			ax = areadict[q[0]]
 			if ax not in g:
 				g[ax] = []
@@ -64,13 +65,11 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	gnew = [g[t] for t in sorted(g,key = lambda x:len(g[x]),reverse=1)]
 	# print "grest",grest
 	# print "gnew",gnew
-	carc = purnCars(grest,cars,areadict,radius)
+	carc = purnCars(grest,cars,areadict,radius,cost)
 	S = Algorithm3.efficiencyGreedy(cost,carc,grest,utility,S)
 	for gx in gnew:
-		carc = purnCars(gx,cars,areadict,radius)
+		carc = purnCars(gx,cars,areadict,radius,cost)
 		S = Algorithm3.efficiencyGreedy(cost,cars,gx,utility,S)
-	end = clock()
-	print "time of 6:",end - start
 	return S
 
 
