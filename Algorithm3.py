@@ -13,9 +13,8 @@ def calCost(S,cost):
 	return costTime
 
 def efficiencyGreedy(cost,cars,quests,utility,S):
-	pairSet = [];
-#	print len(S),len(cars)
-        a1 = Algo1(cost)
+	pairSet = []
+	a1 = Algo1(cost)
 	for qi in range(len(quests)):
 		for ci in range(len(cars)):
 			if a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi):
@@ -23,15 +22,16 @@ def efficiencyGreedy(cost,cars,quests,utility,S):
 				tmpS = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
 				cost2 = calCost(tmpS,cost);
 				pairSet.append([qi,ci,utility[qi][ci]*1.0/(cost2-cost1+0.01)])
+	
+	pairSet = sorted(pairSet,key= lambda x:x[2],reverse=True)
 	while pairSet:
-		pairSet = sorted(pairSet,key= lambda x:x[2],reverse=True);
+		print len(pairSet)
 		# print pairSet
 		qi = pairSet[0][0]
 		ci = pairSet[0][1]
 		S[ci] = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
 		del pairSet[0]
 		# print "qi,ci",qi,ci 
-
 		for x in pairSet:
 			if x[0]==qi:
 				pairSet.remove(x)
