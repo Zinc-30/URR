@@ -16,25 +16,25 @@ class Algo5():
 			return self.cost[x][y]
 		else:
 			return 1000000
-	def kShortestPathCpver(self,k):
+	def kShortestPathCpver(self,k,tf):
 		C = set(self.G.nodes())
 		for v in self.G.nodes():
 			C.remove(v)
-			tf = nx.shortest_path(self.G,source=v)
 			for x in self.G.nodes():
-				if x != v and x in tf and len(tf[x])<=k:
-					if set(tf[x]) & C:
+				if x != v and x in tf[v] and len(tf[v][x])<=k:
+					if set(tf[v][x]) & C:
 						continue
 					for y in self.G.nodes():
-						if y!=v and y!=x and y in tf and len(tf[y])<=k:
-							if set(tf[y]) & C:
+						if y!=v and y!=x and v in tf[y] and len(tf[y][v])<=k:
+							if set(tf[y][v]) & C:
 								continue
-							if len(tf[x])+len(tf[y])>k:
+							if len(tf[v][x])+len(tf[y][v])>k:
 								C.add(v)
 		return C
 	def areaConstruction(self,k):
 		areaSet = [];
-		kSpc = self.kShortestPathCpver(k)
+		tf = nx.shortest_path(self.G)
+		kSpc = self.kShortestPathCpver(k,tf)
 		# print kSpc
 		area = {}
 		radius = {}
@@ -58,6 +58,7 @@ class Algo5():
 		filename = 'data/areaR-'+str(k)+'.npy'
 		pickle.dump(radius, open(filename, 'w'))
 		print 'write area data'
+		print len(area)
 		return area
 
 # G = rd.readRoad()
