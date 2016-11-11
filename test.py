@@ -124,46 +124,51 @@ def tA6(k):
 
 def test(numq,numc,pt,roomc):
 	print "==============",numq,numc,pt,roomc,"============" 
-	tA2()
-	tA3()
-	tA6(10)
-	return 0
+	result = []
+	result.append([numq,numc,pt,roomc])
+	ans,time,sumu = tA2()
+	result.append([time,sumu])
+	ans,time,sumu = tA3()
+	result.append([time,sumu])
+	ans,time,sumu = tA6(10)
+	result.append([time,sumu])
+	return result
 
 if __name__ == "__main__":
 	numq = 3
 	numc = 10
 	pt = 5
 	roomc = 3
-	# BtA2()
-	# for pt in [0,15,10,5]:
-	# 	quests = rd.readQuests(3,pt)
-	# 	test(numq,numc,pt,roomc)
-
-	# numq = 3
-	# numc = 10
-	# pt = 5
-	# roomc = 3	
-	# for roomc in [2,5,4,3]:
-	# 	cars = rd.readCars(10,roomc)
-	# 	test(numq,numc,pt,roomc)
-
-	# numq = 3
-	# numc = 10
-	# pt = 5
-	# roomc = 3
-	
-	# for numq in [1,5,8,10,3]:
-	# 	quests = rd.readQuests(numq,5)
-	# 	utility = rd.readUtility(numq,10)
-	# 	test(numq,numc,pt,roomc)
-	
-	# numq = 3
-	# numc = 10
-	# pt = 5
-	# roomc = 3
-
-	# for numc in [5,8,50,30,10]:
-	# 	utility = rd.readUtility(3,numc)
-	# 	cars = rd.readCars(numc,3)
-	# 	test(numq,numc,pt,roomc)
-tA2()
+	result = []
+	for pt in [0,15,10,5]:
+		quests = rd.readQuests(3,pt)
+		result.append(test(numq,numc,pt,roomc))
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3	
+	for roomc in [2,5,4,3]:
+		cars = rd.readCars(10,roomc)
+		if roomc!=3:
+			result.append(test(numq,numc,pt,roomc))
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3
+	for numq in [1,5,8,10,3]:
+		quests = rd.readQuests(numq,5)
+		utility = rd.readUtility(numq,10)
+		if numq!=3:
+			result.append(test(numq,numc,pt,roomc))
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3
+	for numc in [5,8,50,30]:
+		utility = rd.readUtility(3,numc)
+		cars = rd.readCars(numc,3)
+		result.append(test(numq,numc,pt,roomc))
+	with open('data/result.txt','w') as f:
+		print >>f,"[#quests,#cars,range of pickup_time,car room],[time,sum utility]"
+		for r in result:
+			print >>f,result
