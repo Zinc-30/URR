@@ -31,14 +31,14 @@ def sRoad(filename,nodes):
 		tmps = line[:-1].split(' ')
 		if tmps[0] == 'a' and tmps[1] in nodeid and tmps[2] in nodeid:
 			w = int(tmps[3])//10
-			t1 = tmps[1]
-			t2 = tmps[2]
-			while w>1000:
-				w = w - 1000
-				noden=noden+1
-				t2 = noden
-				G.add_edge(t1, t2, weight=w)
-				t1 = t2
+			t1 = nodeid.index(tmps[1])
+			t2 = nodeid.index(tmps[2])
+#			while w>1000:
+#				w = w - 1000
+#				noden=noden+1
+#				t2 = noden
+#				G.add_edge(t1, t2, weight=w)
+#				t1 = t2
 			G.add_edge(t1, nodeid.index(tmps[2]), weight=w)
 	return G
 
