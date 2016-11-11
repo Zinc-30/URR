@@ -50,7 +50,7 @@ def groupScheduling(G,k,cost,cars,quests,utility,S):
 	g={}
 	grest = []
 	area = getArea(G,k,cost)
-	areadict = getAdic(k)
+	areadict = getDict(k)
 	radius = getRadius(k)
 	start = clock()
 	for q in quests:
