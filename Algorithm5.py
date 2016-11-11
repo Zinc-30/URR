@@ -1,6 +1,9 @@
 import networkx as nx
 import readData as rd
 import pickle
+import numpy as np
+import os
+from time import clock
 class Algo5():
 	def __init__(self,G,cost):
 		if G:
@@ -33,8 +36,15 @@ class Algo5():
 		return C
 	def areaConstruction(self,k):
 		areaSet = [];
-		tf = nx.shortest_path(self.G)
-		kSpc = self.kShortestPathCpver(k,tf)
+		start = clock()
+		if os.path.exists('data/path.npy'):
+			path = np.load('data/path.npy').tolist()
+		else:
+			path = nx.shortest_path(self.G)
+			np.save('data/path.npy', np.array(path))
+		kSpc = self.kShortestPathCpver(k,path)
+		end = clock()
+		print "kspc time",end-start
 		# print kSpc
 		area = {}
 		radius = {}
