@@ -7,15 +7,21 @@ def findRiders(s):
 		Riders = Riders|x['riders']
 	return Riders
 
-def moveRider(S,ri):
-	print "rider",ri
-	print "S",S
+def getCost(x,y,cost):
+	if x in cost and y in cost[x]:
+		return cost[x][y]
+	else:
+		return 1000000
+
+def moveRider(S,ri,cost):
+	upId = 0
+	downId = 0
 	for (i,x) in enumerate(S):
 		if i>0:
 			if x['riders'] - S[i-1]['riders'] == set([ri]):
 				x['startLocation'] = S[i-1]['startLocation']
 				del S[i-1]
-				upId = i-1;
+				upId = i;
 				break;
 	for (i,x) in enumerate(S):
 		if i>0:
@@ -27,23 +33,25 @@ def moveRider(S,ri):
 				break;
 	if S[len(S)-1]['riders'] == set([ri]):
 		del S[len(S)-1]
-		downId = len(S);
-	for i in range(upId,downId):
-		S[i]['riders'] = S[i]['riders'] - set([ri])
-	if len(S)>0:
-		eTime = S[upId]['startTime'];
+		downId = len(S)-1;
+
+	if upId and downId>upId:
 		for i in range(upId,downId):
-			S[i+1]['startTime'] = S[i]['startTime']+ getCost(S[i]['startLocatioon'],S[i]['endLocation'])
-		for i in range(downId,upId,-1):
-			if i<len(S)-1:
-				S[i]['flexibleTime'] = min(S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation']),S[i+1]['flexibleTime'])
-			else:
-				S[i]['flexibleTime'] = S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation']);
-	
+			S[i]['riders'] = S[i]['riders'] - set([ri])
+		if len(S)>0:
+			eTime = S[upId]['startTime'];
+			for i in range(upId,downId-1):
+				S[i+1]['startTime'] = S[i]['startTime']+ getCost(S[i]['startLocation'],S[i]['endLocation'],cost)
+			for i in range(downId-1,upId,-1):
+				if i<len(S)-1:
+					S[i]['flexibleTime'] = min(S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation'],cost),S[i+1]['flexibleTime'])
+				else:
+					S[i]['flexibleTime'] = S[i]['deadline'] - S[i]['startTime'] - getCost(S[i]['startLocation'],S[i]['endLocation'],cost)	
 	return S
 
 def bilateralArrangement(cost,cars,quests,utility,S):
-	tmpU = [[[carU,rider.index(carU)] for carU in rider] for rider in utility]
+	i = 0
+	tmpU = [[[u,ri] for (ri,u) in enumerate(rider)] for rider in utility]
 	carList = []
 	for li in tmpU:
 		carList.append(sorted(li, key= lambda x:x[0],reverse=True))
@@ -51,10 +59,9 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 	a1 = Algo1(cost)
 	while questSet:
 		questId = questSet.pop();
-		# print "questId",questId
-		arrange = 0;
+		arrange = 0
 		while not arrange:
-			if questId in carList and carList[questId]:
+			if questId < len(carList) and carList[questId]:
 				carId = carList[questId][0][1]
 			else:
 				# print carList[questId],questId
@@ -81,7 +88,7 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 				for ri in riList:	
 					if utility[ri[0]][carId]<utility[questId][carId]:
 						tmpS = copy.deepcopy(S[carId]) 
-						S[carId] = moveRider(S[carId],ri[0]);
+						S[carId] = moveRider(S[carId],ri[0],cost);
 						# print " last carID",carId
 						if a1.ScheduleSingleRequest(S[carId],car,request,questId):
 							S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
