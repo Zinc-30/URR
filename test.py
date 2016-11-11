@@ -144,6 +144,7 @@ if __name__ == "__main__":
 	# for pt in [0,15,10,5]:
 	# 	quests = rd.readQuests(3,pt)
 	# 	result.append(test(numq,numc,pt,roomc))
+	tA5(100)
 	# numq = 3
 	# numc = 10
 	# pt = 5
