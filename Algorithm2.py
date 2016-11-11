@@ -1,9 +1,9 @@
 from Algorithm1 import Algo1
 import copy
 
-def findRiders(S):
+def findRiders(s):
 	Riders = set()
-	for x in S:
+	for x in s:
 		Riders = Riders|x['riders']
 	return Riders
 

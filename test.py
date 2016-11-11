@@ -9,10 +9,20 @@ import sys
 
 G = rd.readRoad()
 cost = rd.readCost()
-quests = rd.readQuests()
-cars = rd.readCars()
-utility = rd.readUtility()
-S = [[] for i in range(len(cars))]
+quests
+cars
+utility
+
+def calsum(S):
+	sum = 0;
+    global utility
+    for (i,tmps) in enumerate(S):
+    	riders = set()
+		for x in tmps:
+			riders = riders|x['riders']
+		for r in riders:
+			sum = sum + utility[r][i]
+	return sum
 
 def tA1(questId,carId):
 	a1 = Algo1(cost)
@@ -28,56 +38,133 @@ def tA1(questId,carId):
 	return tmpS,time
 
 def tA2():
+	global utility
+	global cost
+	global quests
+	global cars
+	S = [[] for i in range(len(cars))]
 	start = clock()
 	ans = A2.bilateralArrangement(cost,cars,quests,utility,S)
 	end = clock()
 	time = end-start
+	sumu = calsum(ans)
+	print "================A2================="
 	print "answer is ",ans
-	print "time:", time
-	return ans,time
+	print "time A2:", time
+	print "sum utility", sumu
+	return ans,time,sumu
 
 def tA3():
+	global utility
+	global cost
+	global quests
+	global cars
+	S = [[] for i in range(len(cars))]
 	start = clock();
 	ans = A3.efficiencyGreedy(cost,cars,quests,utility,S)
 	end = clock();
+	time = end-start
+	sumu = calsum(ans)
+	print "================A3================="
 	print "answer is ",ans
-	print "time:", end-start
-	return ans,end-start
+	print "time A2:", time
+	print "sum utility", sumu
+	return ans,time,sumu
 
 def tA5(k):
+	global utility
+	global cost
+	global quests
+	global cars
+	global G
 	a5 = Algo5(G,cost)
 	area = a5.areaConstruction(k)
 	print "area is",area
 	return area
 
 def tA6(k):
+	global utility
+	global cost
+	global quests
+	global cars
+	global G
+	S = [[] for i in range(len(cars))]
 	start = clock();
 	ans = A6.groupScheduling(G,k,cost,cars,quests,utility,S)
 	end = clock();
-	print "answer is",ans
-	print "time",end-start
-	return ans,end-start
+	time = end-start
+	sumu = calsum(ans)
+	print "================A6================="
+	print "answer is ",ans
+	print "time A2:", time
+	print "sum utility", sumu
+	return ans,time,sumu
 
 
 
-if len(sys.argv)<2:
-	print "input num-th of Algorithm! eg: input 2"
-else:
-	print "test",sys.argv[1],"Algorithm"
-	if sys.argv[1]=='1':
-		if len(sys.argv)<4:
-			print "in test 1: input requestid,carid"
-		else:
-			tA1(int(sys.argv[2]),int(sys.argv[3]))
-	if sys.argv[1]=='5' or sys.argv[1]=='6':
-		if len(sys.argv)<3:
-			print "in test 5,6: input k of k-SPC"
-		else:
-			if sys.argv[1]=='6':
-				tA6(int(sys.argv[2]))
-			if sys.argv[1]=='5':
-				tA5(int(sys.argv[2]))
-	if sys.argv[1]=='2':
-		tA2()
-	if sys.argv[1]=='3':
-		tA3()
+# if len(sys.argv)<2:
+# 	print "input num-th of Algorithm! eg: input 2"
+# else:
+# 	print "test",sys.argv[1],"Algorithm"
+# 	if sys.argv[1]=='1':
+# 		if len(sys.argv)<4:
+# 			print "in test 1: input requestid,carid"
+# 		else:
+# 			tA1(int(sys.argv[2]),int(sys.argv[3]))
+# 	if sys.argv[1]=='5' or sys.argv[1]=='6':
+# 		if len(sys.argv)<3:
+# 			print "in test 5,6: input k of k-SPC"
+# 		else:
+# 			if sys.argv[1]=='6':
+# 				tA6(int(sys.argv[2]))
+# 			if sys.argv[1]=='5':
+# 				tA5(int(sys.argv[2]))
+# 	if sys.argv[1]=='2':
+# 		tA2()
+# 	if sys.argv[1]=='3':
+# 		tA3()
+
+def test(numq,numc,pt,roomc):
+	print "==============",numq,numc,pt,roomc,"============" 
+	tA2()
+	tA3()
+	tA6(10)
+	return 0
+
+if __name__ == "__main__":
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3
+	for pt in [0,15,10,5]:
+		quests = rd.readQuests(3,pt)
+		test(numq,numc,pt,roomc)
+
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3	
+	for roomc in [2,5,4,3]:
+		cars = rd.readCars(10,roomc)
+		test(numq,numc,pt,roomc)
+
+
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3
+	
+	for numq in [1,5,8,10,3]:
+		quests = rd.readQuests(numq,5)
+		utility = rd.readUtility(numq,10)
+		test(numq,numc,pt,roomc)
+	
+	numq = 3
+	numc = 10
+	pt = 5
+	roomc = 3
+
+	for numc in [5,8,50,30,10]:
+		utility = rd.readUtility(3,numc)
+		cars = rd.readCars(numc,3)
+		test(numq,numc,pt,roomc)
