@@ -67,7 +67,7 @@ def tA3():
 	sumu = calsum(ans)
 	print "================A3================="
 	#print "answer is ",ans
-	print "time A2:", time
+	print "time A3:", time
 	print "sum utility", sumu
 	return ans,time,sumu
 
@@ -93,7 +93,7 @@ def tA6(k):
 	sumu = calsum(ans)
 	print "================A6================="
 	#print "answer is ",ans
-	print "time A2:", time
+	print "time A6:", time
 	print "sum utility", sumu
 	return ans,time,sumu
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 	numc = 10
 	pt = 5
 	roomc = 3
-        tA5(10)
+	tA5(10)
 	for pt in [0,15,10,5]:
 		quests = rd.readQuests(3,pt)
 		test(numq,numc,pt,roomc)
