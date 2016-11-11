@@ -37,8 +37,8 @@ class Algo5():
 		kSpc = self.kShortestPathCpver(k)
 		# print kSpc
 		area = {}
-		radius = []
-		areadict = []
+		radius = {}
+		areadict = {}
 		for u in kSpc:
 			area[u] = set([u])
 			areadict[u] = u
@@ -54,9 +54,9 @@ class Algo5():
 		filename = 'data/area-'+str(k)+'.txt'
 		pickle.dump(area, open(filename, 'w'))
 		filename = 'data/areadict-'+str(k)+'.npy'
-		np.save(filename, np.array(areadict))
+		pickle.dump(areadict, open(filename, 'w'))
 		filename = 'data/areaR-'+str(k)+'.npy'
-		np.save(filename, np.array(radius))
+		pickle.dump(radius, open(filename, 'w'))
 		print 'write area data'
 		return area
 

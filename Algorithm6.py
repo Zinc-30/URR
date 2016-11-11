@@ -25,7 +25,7 @@ def getDict(k):
 	filename = 'data/areadict-'+str(k)+'.npy'
 	if os.path.exists(filename):
 		print 'read dict data'
-		return np.load(filename).tolist()
+		return pickle.load(open(filename, 'r'))
 	else:
 		print 'no dict data'
 
@@ -33,7 +33,7 @@ def getRadius(k):
 	filename = 'data/areaR-'+str(k)+'.npy'
 	if os.path.exists(filename):
 		print 'read radic data'
-		return np.load(filename).tolist()
+		return pickle.load(open(filename, 'r'))
 	else:
 		print 'no dict data'
 
