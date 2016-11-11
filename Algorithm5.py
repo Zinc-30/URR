@@ -37,13 +37,26 @@ class Algo5():
 		kSpc = self.kShortestPathCpver(k)
 		# print kSpc
 		area = {}
+		radius = []
+		areadict = []
 		for u in kSpc:
 			area[u] = set([u])
+			areadict[u] = u
 		for u in set(self.G.nodes())-kSpc:
 			x = min([[self.getCost(u,v),v] for v in kSpc])
-			area[x[1]].add(u);
+			area[x[1]].add(u)
+			areadict[u] = x[1]
+			if x[1] in radius:
+				if self.getCost(x[1],u)>radius[x[1]]:
+					radius[x[1]] = self.getCost(x[1],u)
+			else:
+				radius[x[1]] = self.getCost(x[1],u)
 		filename = 'data/area-'+str(k)+'.txt'
 		pickle.dump(area, open(filename, 'w'))
+		filename = 'data/areadict-'+str(k)+'.npy'
+		np.save(filename, np.array(areadict))
+		filename = 'data/areaR-'+str(k)+'.npy'
+		np.save(filename, np.array(radius))
 		print 'write area data'
 		return area
 
