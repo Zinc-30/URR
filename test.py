@@ -126,10 +126,10 @@ def test(numq,numc,pt,roomc):
 	print "==============",numq,numc,pt,roomc,"============" 
 	result = []
 	result.append([numq,numc,pt,roomc])
-	# ans,time,sumu = tA2()
-	# result.append([time,sumu])
-	# ans,time,sumu = tA3()
-	# result.append([time,sumu])
+	ans,time,sumu = tA2()
+	result.append([time,sumu])
+	ans,time,sumu = tA3()
+	result.append([time,sumu])
 	ans,time,sumu = tA6(100)
 	result.append([time,sumu])
 	return result
