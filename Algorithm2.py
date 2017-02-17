@@ -66,14 +66,15 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 			else:
 				# print carList[questId],questId
 				break
-			carList[questId].remove(carList[questId][0])
+			del carList[questId][0]
 			# print "carId",carId
 			car = cars[carId]
 			request = quests[questId]
 			# print "before",S[carId]
-			if a1.ScheduleSingleRequest(S[carId],car,request,questId):
+			tmps1=a1.ScheduleSingleRequest(S[carId],car,request,questId)
+			if tmps1:
 				# print "in change"
-				S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
+				S[carId] = tmps1
 				# print S[carId]
 				arrange = 1;
 			else:
@@ -90,8 +91,9 @@ def bilateralArrangement(cost,cars,quests,utility,S):
 						tmpS = copy.deepcopy(S[carId]) 
 						S[carId] = moveRider(S[carId],ri[0],cost);
 						# print " last carID",carId
-						if a1.ScheduleSingleRequest(S[carId],car,request,questId):
-							S[carId] = a1.ScheduleSingleRequest(S[carId],car,request,questId)
+						tmps1=a1.ScheduleSingleRequest(S[carId],car,request,questId)
+						if tmps1:
+							S[carId] = tmps1
 							carList[ri[0]].append([utility[ri[0]][carId],carId]);
 							carList[ri[0]] = sorted(carList[ri[0]],key= lambda x:x[0],reverse=True)
 							questSet.add(ri[0])
