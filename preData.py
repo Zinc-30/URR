@@ -1,71 +1,95 @@
-import os
 import networkx as nx
-from math import pow,sqrt
-from random import randint
-from random import random
 import numpy as np
+from random import randint
+from sklearn.neighbors import KDTree
+import pandas as pd
 
-def inArea(node,area):
-	return area[0]<=node[0]<=area[2] and area[1]<=node[1]<=area[3]
-
-def sNodes(filename,area):
+def sNodes(filename):
 	i = 0
 	nodes = []
 	for line in open(filename,'r'):
 		tmps = line[:-1].split(' ')
 		i = i + 1
 		if tmps[0] == 'v':
-			nid = tmps[1]
 			node = [int(tmps[2]),int(tmps[3])]
-			if inArea(node,area):
-				nodes.append([nid,node[0],node[1]])
+			nodes.append([node[0],node[1]])
 	return nodes
+
+def get_nodes_trip(filename,nodes):
+	limit = 50
+	# calc ==========================
+	kdtree = KDTree(nodes)
+	df = pd.read_csv(filename,na_values='',dtype={'vendor_id':object,'rate_code':object,'pickup_longitude':float,'pickup_latitude':float,'dropoff_longitude':float,'dropoff_latitude':float})\
+		[['pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','trip_time_in_secs','trip_distance']].dropna()
+	pickup_df = df[['pickup_longitude','pickup_latitude']]*1000000
+	pickup_df = pickup_df.astype(int)
+	dropoff_df = df[['dropoff_longitude','dropoff_latitude']]*1000000
+	dropoff_df = dropoff_df.astype(int)
+	pickup_dist,pickup_ind = kdtree.query(pickup_df,k=1)
+	dropoff_dist,dropoff_ind = kdtree.query(dropoff_df,k=1)
+	select_flag = np.logical_and(pickup_dist<limit,dropoff_dist<limit)
+	select_df = pd.DataFrame()
+	select_df['pickup_nodes'] = pickup_ind[select_flag]
+	select_df['dropoff_nodes'] = dropoff_ind[select_flag]
+	select_df['cost'] = np.array(df['trip_time_in_secs'])[select_flag.T[0]]
+	print select_df.info()	
+	select_df = select_df[select_df['pickup_nodes']!=select_df['dropoff_nodes']]
+	select_df.to_csv('data/'+str(limit)+'_select_nodes.csv')
+	print select_df.info()
+	# read ==============================
+	select_df = pd.read_csv('data/'+str(limit)+'_select_nodes.csv')
+	print select_df.info()
+	return set(select_df['pickup_nodes']) | set(select_df['dropoff_nodes'])
+
+
 
 def sRoad(filename,nodes):
 	G = nx.Graph()
-	nodeid = [x[0] for x in nodes]
-	i = 0
-	noden = len(nodeid)
+	# calc =======================
 	for line in open(filename,'r'):
-		i = i+1
 		tmps = line[:-1].split(' ')
-		if tmps[0] == 'a' and tmps[1] in nodeid and tmps[2] in nodeid:
-			w = int(tmps[3])//10
-			t1 = nodeid.index(tmps[1])
-			t2 = nodeid.index(tmps[2])
-#			while w>1000:
-#				w = w - 1000
-#				noden=noden+1
-#				t2 = noden
-#				G.add_edge(t1, t2, weight=w)
-#				t1 = t2
-			G.add_edge(t1, nodeid.index(tmps[2]), weight=w)
-	return G
+		if tmps[0] == 'a':
+			G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
+	print "generate into G.node num",len(G.nodes())
+	print "generate into G.edges num",len(G.edges())
+	nodelist = list(nodes)
+	cost = dict()
+	print "calc cost distance between nodes"
+	G_new = nx.Graph()
+	for s in nodelist:
+		if s not in cost:
+			cost[s] = {}
+			for t in nodelist:
+				if t in cost and s in cost[t]:
+					cost[s][t] = cost[t][s]
+				cost[s][t] = nx.shortest_path_length(G,source=s,target=t)
+				G_new.add_edge(s, t, weight = cost[s][t])
+	np.save('data/nodes.npy', np.array(nodelist))
+	np.save('data/cost.npy', np.array(cost))
+	nx.write_gml(G_new,"data/new_graph.gml")
+	print "finish save data"
+	return G_new,cost
 
-def sQuest(filename,area,nodes,times,pt1):
-	i = 1
-	limit = 3000
-	quest = [];
-	# for line in open(filename,'r'):
+def sQuest(filename,nodes,times,pt1):
+	
 
-		# tmps = line[:-1].split(',')	
-		# if 2<i:
-			# bnode = [int(float(tmps[10])*1000000),int(float(tmps[11])*1000000)]
-			# enode = [int(float(tmps[12])*1000000),int(float(tmps[13])*1000000)]
-			# if inArea(bnode,area) and inArea(enode,area):
-			# 	array1 = [int(sqrt(pow(bnode[0]-node[1],2)+pow(bnode[1]-node[2],2))) for node in nodes]
-			# 	array2 = [int(sqrt(pow(enode[0]-node[1],2)+pow(enode[1]-node[2],2))) for node in nodes]
-			# 	mindist1 = min(array1)
-			# 	mindist2 = min(array2)
-			# 	if mindist1<limit and mindist2<limit:
-			# 		node1 = array1.index(mindist1)
-			# 		node2 = array2.index(mindist2)
-	for line in range(1000):
-		for k in range(times):
-			time1 = randint(pt1+1,pt1+300)
-			time2 = int(time1+5*randint(pt1,3*pt1))
-			quest.append([randint(0,len(nodes)),time1,time2,randint(0,len(nodes))])
-	return quest
+	# =================================
+	df = pd.read_csv('data/select_nodes.csv')
+	select_df = df[df['pickup_nodes']!=df['dropoff_nodes']]
+	print select_df.info()
+	# =================================
+	# quest = []
+	# dropoff_dist,dropoff_ind = kdtree.query(dropoff_df,k=1)
+
+	# if dist[0]<limit and dist[1]<limit:
+	# 	print '=======',i,'=========='
+	# 	print bnode,enode
+	# 	print nodes[ind[0][0]],nodes[ind[1][0]]
+	# 	count += 1
+	# 	time1 = randint(pt1+1,pt1+300)
+	# 	time2 = int(time1+5*randint(pt1,3*pt1))
+	# 	quest.append([ind[0][0],time1,time2,ind[1][0]])
+	# return quest
 
 def sCars(num,limit,room):
 	cars = []
@@ -75,68 +99,60 @@ def sCars(num,limit,room):
 	return cars
 
 
-# def sCars(nums):
-area = [-74000000,40730000,-73900000,40740000] #664,34
-# area = [-74000000,40730000,-73900000,40750000] 1482,49
-# area = [-74000000,40730000,-73900000,40760000] 2164,151
-# area = [-74100000,40720000,-73800000,40770000] 9531,449
-# area = [-74000000,40710000,-73800000,40770000] 8801,1121
+def pre_main_data():
+	node_file = 'data/USA-road-d.NY.co'
+	graph_file = 'data/USA-road-d.NY.gr'
+	trip_file = 'data/trip_data_2.csv'
+	nodes = sNodes(node_file)
+	print "slect node num",len(nodes)
+	nodelist = get_nodes_trip(trip_file,nodes)
+	print len(nodelist)
+	#=======================================================
 
-# area = [-74000000,40730000,-73800000,40770000] #5636,941
-print "select area",area
+	G,cost = sRoad(graph_file,nodelist)
 
-nodes = sNodes('data/USA-road-d.NY.co',area)
-print "slect node num",len(nodes)
+	#======================================================
+	# numQ = 0.1
+	# pt =0.5
+	# quest = sQuest(request_file,area,nodes,numQ,pt*60)
+	# print quest
+	# qlen = []
+	# for numQ in [1,3,5,8,10]:
+	# 	if numQ == 3:
+	# 		for pt in [0,5,10,15]:
+	# 			quest = sQuest(request_file,area,nodes,numQ,pt*60)
+	# 			filename = 'data/'+str(numQ)+'.'+str(pt)+'-quests.npy'
+	# 			np.save(filename, np.array(quest))
+	# 	else:
+	# 		quest = sQuest(request_file,area,nodes,numQ,300)
+	# 		filename = 'data/'+str(numQ)+'.'+str(5)+'-quests.npy'
+	# 		np.save(filename, np.array(quest))
+	# print "generate quest"
 
-#======================================================
-qlen = []
-for numQ in [1,3,5,8,10]:
-	if numQ == 3:
-		for pt in [0,5,10,15]:
-			quest = sQuest('data/trip_data_2.csv',area,nodes,numQ,pt*60)
-			filename = 'data/'+str(numQ)+'.'+str(pt)+'-quests.npy'
-			np.save(filename, np.array(quest))
-	else:
-		quest = sQuest('data/trip_data_2.csv',area,nodes,numQ,300)
-		filename = 'data/'+str(numQ)+'.'+str(5)+'-quests.npy'
-		np.save(filename, np.array(quest))
-print "generate quest"
+	# for numC in [5,8,10,30,50]:
+	# 	if numC == 10:
+	# 		for roomC in [2,3,4,5]:
+	# 			cars = sCars(numC*100,len(nodes),roomC)
+	# 			filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
+	# 			np.save(filename, np.array(cars))
+	# 	else:
+	# 		roomC = 3
+	# 		cars = sCars(numC*100,len(nodes),roomC)
+	# 		filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
+	# 		np.save(filename, np.array(cars))
+	# print "generate cars"
 
-for numC in [5,8,10,30,50]:
-	if numC == 10:
-		for roomC in [2,3,4,5]:
-			cars = sCars(numC*100,len(nodes),roomC)
-			filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
-			np.save(filename, np.array(cars))
-	else:
-		roomC = 3
-		cars = sCars(numC*100,len(nodes),roomC)
-		filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
-		np.save(filename, np.array(cars))
-print "generate cars"
+	# for numC in [5,8,10,30,50]:
+	# 	if numC == 10:
+	# 		for ql in [1,3,5,8,10]:
+	# 			utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(ql*1000)]
+	# 			filename = 'data/'+str(ql)+'.'+str(numC)+'-utility.npy'
+	# 			np.save(filename, np.array(utility))
+	# 	else:
+	# 		utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(3000)]
+	# 		filename = 'data/'+str(3)+'.'+str(numC)+'-utility.npy'
+	# 		np.save(filename, np.array(utility))
+	# print "generate utility"
 
-for numC in [5,8,10,30,50]:
-	if numC == 10:
-		for ql in [1,3,5,8,10]:
-			utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(ql*1000)]
-			filename = 'data/'+str(ql)+'.'+str(numC)+'-utility.npy'
-			np.save(filename, np.array(utility))
-	else:
-		utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(3000)]
-		filename = 'data/'+str(3)+'.'+str(numC)+'-utility.npy'
-		np.save(filename, np.array(utility))
-print "generate utility"
-
-#=======================================================
-
-G = sRoad('data/USA-road-d.NY.gr',nodes)
-print "generate into G.node num",len(G.nodes())
-print "generate into G.edges num",len(G.edges())
-
-cost = nx.shortest_path_length(G,weight='weight')
-print "calc cost distance between nodes"
-
-nx.write_gml(G,"data/graph.gml")
-np.save('data/nodes.npy', np.array(nodes))
-np.save('data/cost.npy', np.array(cost))
-print "finish save data"
+if __name__ == '__main__':
+	pre_main_data()
