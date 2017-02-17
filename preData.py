@@ -30,7 +30,7 @@ def sRoad(filename,nodes):
 		i = i+1
 		tmps = line[:-1].split(' ')
 		if tmps[0] == 'a' and tmps[1] in nodeid and tmps[2] in nodeid:
-			w = int(tmps[3])//10
+			w = int(tmps[3])//2
 			t1 = nodeid.index(tmps[1])
 			t2 = nodeid.index(tmps[2])
 #			while w>1000:
@@ -63,7 +63,7 @@ def sQuest(filename,area,nodes,times,pt1):
 	for line in range(1000):
 		for k in range(times):
 			time1 = randint(pt1+1,pt1+300)
-			time2 = int(time1+5*randint(pt1,3*pt1))
+			time2 = int(time1+200+2*randint(100,1000))
 			quest.append([randint(0,len(nodes)),time1,time2,randint(0,len(nodes))])
 	return quest
 
