@@ -85,12 +85,13 @@ def sRoad(filename,nodes,ncores):
 				cost[t][s] = c
 	else:
 		# ++++=1s-version ========
-		for s in nodelist:
-			print 'doing',s
+		for i in range(len(nodelist)):
+			s = nodelist[i]
+			if i%100==0:
+				print 'doing',s,i,'/',len(nodelist)
 			if s not in cost:
 				cost[s] = {}
 				for t in nodelist:
-					print '===doing',t
 					if t in cost and s in cost[t]:
 						cost[s][t] = cost[t][s]
 					else:
