@@ -53,12 +53,11 @@ def efficiencyGreedy(cost,cars,quests,utility,S,sim):
 	pairSet = sorted(pairSet,key= lambda x:x[2],reverse=True)
 	while pairSet:
 		# print pairSet
-		# print len(pairSet)
-		# print pairSet
 		qi = pairSet[0][0]
 		ci = pairSet[0][1]
 		S[ci] = a1.ScheduleSingleRequest(S[ci],cars[ci],quests[qi],qi);
-		del pairSet[0]
+		#print S[ci]
+                del pairSet[0]
 		# print "qi,ci",qi,ci 
 		for i in range(len(pairSet)-1,-1,-1):
 			if pairSet[i][0]==qi:

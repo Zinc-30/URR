@@ -94,7 +94,6 @@ def sRoad(filename,nodes,ncores):
 	np.save('data/path.npy', np.array(path))
 	nx.write_gml(G,"data/graph.gml")
 	print "finish save data"
-
 	# read ==========================
 	# cost = np.load(cost_file).tolist()
 	# G_new = nx.read_gml("data/new_graph.gml")
