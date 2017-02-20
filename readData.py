@@ -43,6 +43,49 @@ def readUtility(numQ,numC):
 	else:
 		print 'no utility data'
 
+def getCost(x,y,cost):
+	if x in cost and y in cost[x]:
+		return cost[x][y]
+	else:
+		return 1000000
+
+def calCost(S,cost):
+	costTime = 0;
+	for x in S:
+		costTime = costTime + getCost(x['startLocation'],x['endLocation'],cost)
+	return costTime
+
+def cal_u(cid,rid,S,s1,t1,utility,sim,cost,paras):
+	u1 = utility[rid][cid]
+	cost_all = calCost(S,cost)
+	u2 = 0
+	cost_sum = 0
+	for x in S:
+		if rid in x['riders']:
+			cost_x = getCost(x['startLocation'],x['endLocation'],cost)
+			rate = cost_x/cost_all
+			for r in x['riders']:
+				if r!=rid:
+					u2 += rate/(len(x['riders'])-1)*sim[r][rid]
+			cost_sum += cost_x
+	u3 = 2/(1+np.exp(cost_sum/getCost(s1,t1,cost)))
+	return u1*paras[0]+u2*paras[1]+u3*paras[2]
+
+def cal_u_car(cid,S,utility,sim,cost,quests,paras):
+	riders = set([])
+	for x in S:
+		riders = riders | x['riders']
+	sum_u = 0	
+	for rid in riders:
+		sum_u += cal_u(cid,rid,S,quests[rid][0],quests[rid][3],utility,sim,cost,paras)
+	return sum_u
+
+def cal_u_all(S,utility,sim,cost,quests,paras):
+	ans = 0
+	for i in range(len(S)):
+		ans += cal_u_car(i,S[i],utility,sim,cost,quests,paras)
+	return ans
+
 # def getG():
 # 	G = nx.Graph()
 # 	G = readRoad('road.txt',G)

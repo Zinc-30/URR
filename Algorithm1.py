@@ -6,7 +6,6 @@ class Algo1():
 		if cost:
 			self.cost = cost
 		else:
-			G = rd.readRoad()
 			self.cost = rd.readCost()
 
 
@@ -24,23 +23,21 @@ class Algo1():
 		"""
 		S = copy.deepcopy(Scopy)
 		event = S[u]
-		S.remove(event)
+		del S[u]
 		newevent1 = {'startLocation':event['startLocation'],'riders':set(event['riders']),'endLocation':xplace,'deadline':xtime}
 		newevent2 = {'startLocation':xplace,'riders':set(event['riders']),'endLocation':event['endLocation'],'deadline':event['deadline']}
 		S.insert(u,newevent1)
 		S.insert(u+1,newevent2)
 		if pick:
-			for (i,x) in enumerate(S):
-				if i>u:
-					x['riders'].add(questId) 
+			for i in range(u+1,len(S)):
+				S[i]['riders'].add(questId) 
 		else:
-			for (i,x) in enumerate(S):
-				if i>u:
-					x['riders'].remove(questId) 
+			for i in range(u+1,len(S)):
+				S[i]['riders'].remove(questId) 
 		eTime = event['startTime'];
-		for ei in range(u,len(S)):
-			S[ei]['startTime']=eTime;
-			eTime = eTime + self.getCost(S[ei]['startLocation'],S[ei]['endLocation'])
+		for i in range(u,len(S)):
+			S[i]['startTime']=eTime;
+			eTime = eTime + self.getCost(S[i]['startLocation'],S[i]['endLocation'])
 		tempTime = [x['deadline'] - x['startTime'] - self.getCost(x['startLocation'],x['endLocation']) for x in S];
 		tempTime.reverse()
 		fTime = tempTime[0]
@@ -58,18 +55,18 @@ class Algo1():
 	    event = {'startLocation':,'startTime':,'flexibleTime':,'riders':(),'endLocation':,'deadline':} 
 	    """
 	    waitList=[]
-	    for ei in range(len(S)):
-	    	if pick and len(S[ei]['riders'])+1>avilabenum:
+	    for i in range(len(S)):
+	    	if pick and len(S[i]['riders'])+1>avilabenum:
 	    		continue
-	    	if not pick and questId not in S[ei]['riders']:
+	    	if not pick and questId not in S[i]['riders']:
 	    		continue
-	    	if ei>0 and S[ei]['startTime']>xtime:
+	    	if i>0 and S[i]['startTime']>xtime:
 	    		continue
-	    	if self.getCost(S[ei]['startLocation'],xplace)> xtime:
+	    	if self.getCost(S[i]['startLocation'],xplace)> xtime:
 	    		continue
-	    	if self.getCost(S[ei]['startLocation'],xplace)+self.getCost(xplace,S[ei]['endLocation'])-self.getCost(S[ei]['startLocation'],S[ei]['endLocation'])>S[ei]['flexibleTime']:
+	    	if self.getCost(S[i]['startLocation'],xplace)+self.getCost(xplace,S[i]['endLocation'])-self.getCost(S[i]['startLocation'],S[i]['endLocation'])>S[i]['flexibleTime']:
 	    		continue
-	    	waitList.append((S[ei],self.getCost(S[ei]['startLocation'],xplace)+self.getCost(xplace,S[ei]['endLocation'])-self.getCost(S[ei]['startLocation'],S[ei]['endLocation']),ei))
+	    	waitList.append((S[i],self.getCost(S[i]['startLocation'],xplace)+self.getCost(xplace,S[i]['endLocation'])-self.getCost(S[i]['startLocation'],S[i]['endLocation']),i))
 		return waitList
 
 	def ScheduleSingleRequest(self, S,car,request,questId):
@@ -129,30 +126,30 @@ class Algo1():
 
 # # #output=
 
+if __name__ == '__main__':
+	print "2========="
+	questId = 1;
+	carId = 0;
+	# car = cars[carId];
+	# request = quests[questId];
+	# ScheduleSingleRequest(S,car,request,questId)
+	# print S
 
-# print "2========="
-# questId = 1;
-# carId = 0;
-# car = cars[carId];
-# request = quests[questId];
-# ScheduleSingleRequest(S,car,request,questId)
-# print S
+	# print "3========="
+	# questId = 2;
+	# carId = 0;
+	# car = cars[carId];
+	# request = quests[questId];
+	# ScheduleSingleRequest(S,car,request,questId)
+	# print S
 
-# print "3========="
-# questId = 2;
-# carId = 0;
-# car = cars[carId];
-# request = quests[questId];
-# ScheduleSingleRequest(S,car,request,questId)
-# print S
-
-# print "4========="
-# questId = 3;
-# carId = 0;
-# car = cars[carId];
-# request = quests[questId];
-# ScheduleSingleRequest(S,car,request,questId)
-# print S
+	# print "4========="
+	# questId = 3;
+	# carId = 0;
+	# car = cars[carId];
+	# request = quests[questId];
+	# ScheduleSingleRequest(S,car,request,questId)
+	# print S
 
 
 
