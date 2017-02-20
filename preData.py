@@ -91,7 +91,10 @@ def sRoad(filename,nodes,ncores):
 				print 'doing',s,i,'/',len(nodelist)
 			if s not in cost:
 				cost[s] = {}
-			for t in nodelist:
+			for j in range(len(nodelist)):
+				t = nodelist[j]
+				if j%10==0:
+					print '==doing',j,'/',len(nodelist)
 				if t not in cost[s]:
 					cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
 					if t not in cost:
@@ -99,9 +102,9 @@ def sRoad(filename,nodes,ncores):
 					cost[t][s] = cost[s][t]
 			print cost[s]
 		#===save data==========
-	np.save('data/new_nodes.npy', np.array(nodelist))
-	np.save('data/new_cost.npy', np.array(cost))
-	nx.write_gml(G,"data/new_graph.gml")
+	np.save('data1/new_nodes.npy', np.array(nodelist))
+	np.save('data1/new_cost.npy', np.array(cost))
+	nx.write_gml(G,"data1/new_graph.gml")
 	print "finish save data"
 	# read ==========================
 	# cost = np.load(cost_file).tolist()
