@@ -1,19 +1,21 @@
 import networkx as nx
 import numpy as np
 import os
+import pickle
 
-def readRoad():
+def readRoad(fname = 'data/graph.gml'):
 	G = nx.Graph()
-	if os.path.exists('data/graph.gml'):
-		G = nx.read_gml("data/graph.gml")
+	if os.path.exists(fname):
+		# G = nx.read_gml(fname)
+		G = pickle.load(open(fname))
 		print 'read road data'
 	else:
 		print 'no road data'
 	return G
 
-def readCost():
-	if os.path.exists('data/cost.npy'):
-		cost = np.load('data/cost.npy').tolist()
+def readCost(fname='data/cost.npy'):
+	if os.path.exists(fname):
+		cost = np.load(fname).tolist()
 		print 'read cost data';
 	else:	
 		print 'no cost data'

@@ -5,15 +5,14 @@ import pandas as pd
 from sklearn.neighbors import KDTree
 import pp
 import os
+import pickle
 def calcost(G,subl,wl):
 	cost = dict()
 	for s in subl:
 		cost[s] = {}
-	 	print 'doing',s
 		for t in wl:
 			cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
 	return cost
-
 def sNodes(filename):
 	i = 0
 	nodes = []
@@ -61,6 +60,7 @@ def sRoad(limit,filename,nodes,ncores):
 			G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
 	print "generate into G.node num",len(G.nodes())
 	print "generate into G.edges num",len(G.edges())
+	pickle.dump(G, open('data/'+str(limit)+'_graph.txt', 'w'))
 	nx.write_gml(G,'data/'+str(limit)+'_graph.gml')
 	nodelist = list(nodes)
 	nodelist.sort()
@@ -136,7 +136,7 @@ def pre_main_data():
 	nodes_set = get_nodes_trip(limit,trip_file,nodes)
 	print "slect node num",len(nodes_set)
 	#=======================================================
-	G,cost = sRoad(limit,graph_file,nodes_set,4)
+	G,cost = sRoad(limit,graph_file,nodes_set,11)
 	#======================================================
 	# numQ = 1
 	# pt =0.5
