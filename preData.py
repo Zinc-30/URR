@@ -189,5 +189,5 @@ def pre_toy_data():
 	np.save('toy_sim.npy',np.array(sim))
 
 if __name__ == '__main__':
-	# pre_main_data()
-	pre_toy_data()
+	pre_main_data()
+	# pre_toy_data()
