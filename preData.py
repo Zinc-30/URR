@@ -87,15 +87,17 @@ def sRoad(filename,nodes,ncores):
 		# ++++=1s-version ========
 		for i in range(len(nodelist)):
 			s = nodelist[i]
-			if i%100==0:
+			if i%10==0:
 				print 'doing',s,i,'/',len(nodelist)
 			if s not in cost:
 				cost[s] = {}
-				for t in nodelist:
-					if t in cost and s in cost[t]:
-						cost[s][t] = cost[t][s]
-					else:
-						cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
+			for t in nodelist:
+				if t not in cost[s]:
+					cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
+					if t not in cost:
+						cost[t] = {}
+					cost[t][s] = cost[s][t]
+			print cost[s]
 		#===save data==========
 	np.save('data/new_nodes.npy', np.array(nodelist))
 	np.save('data/new_cost.npy', np.array(cost))
