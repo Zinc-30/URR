@@ -127,7 +127,7 @@ def sQuest(filename,count,pt,cost):
 	print quest
 
 def pre_main_data():
-	limit = 30
+	limit = 75
 	node_file = 'data/USA-road-d.NY.co'
 	graph_file = 'data/USA-road-t.NY.gr'
 	trip_file = 'data/trip_data_2.csv'

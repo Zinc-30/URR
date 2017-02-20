@@ -187,7 +187,7 @@ def areaConstruction(k, G):
 	return area,areadict,radius
 
 if __name__ == "__main__":
-    G = rd.readRoad('data/30_graph.txt')
+    G = rd.readRoad('data/graph.txt')
     print 'G.node num',len(G.nodes())
     print 'G.edges num',len(G.edges())
     jobs = []
