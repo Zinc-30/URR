@@ -4,8 +4,9 @@ import random
 import pandas as pd
 from sklearn.neighbors import KDTree
 import pp
+import os
 def calcost(G,s,t):
-	return s,t,nx.shortest_path_length(G,source=s,target=t,weight='weight')
+	return [s,t,nx.astar_path_length(G,source=s,target=t,weight='weight')]
 def sNodes(filename):
 	i = 0
 	nodes = []
@@ -17,33 +18,35 @@ def sNodes(filename):
 			nodes.append([node[0],node[1]])
 	return nodes
 def get_nodes_trip(filename,nodes):
-	limit = 100
+	limit = 75
+	if not os.path.exists('data/'+str(limit)+'_select_nodes.csv'):
 	# calc ==========================
-	# kdtree = KDTree(nodes)
-	# df = pd.read_csv(filename,na_values='',dtype={'vendor_id':object,'rate_code':object,'pickup_longitude':float,'pickup_latitude':float,'dropoff_longitude':float,'dropoff_latitude':float})\
-	# 	[['pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','trip_time_in_secs','trip_distance']].dropna()
-	# pickup_df = df[['pickup_longitude','pickup_latitude']]*1000000
-	# pickup_df = pickup_df.astype(int)
-	# dropoff_df = df[['dropoff_longitude','dropoff_latitude']]*1000000
-	# dropoff_df = dropoff_df.astype(int)
-	# pickup_dist,pickup_ind = kdtree.query(pickup_df,k=1)
-	# dropoff_dist,dropoff_ind = kdtree.query(dropoff_df,k=1)
-	# select_flag = np.logical_and(pickup_dist<limit,dropoff_dist<limit)
-	# select_df = pd.DataFrame()
-	# select_df['pickup_nodes'] = pickup_ind[select_flag]
-	# select_df['dropoff_nodes'] = dropoff_ind[select_flag]
-	# select_df['cost'] = np.array(df['trip_time_in_secs'])[select_flag.T[0]]
-	# print select_df.info()	
-	# select_df = select_df[select_df['pickup_nodes']!=select_df['dropoff_nodes']]
-	# select_df.to_csv('data/'+str(limit)+'_select_nodes.csv')
-	# print select_df.info()
+		kdtree = KDTree(nodes)
+		df = pd.read_csv(filename,na_values='',dtype={'vendor_id':object,'rate_code':object,'pickup_longitude':float,'pickup_latitude':float,'dropoff_longitude':float,'dropoff_latitude':float})\
+			[['pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','trip_time_in_secs','trip_distance']].dropna()
+		pickup_df = df[['pickup_longitude','pickup_latitude']]*1000000
+		pickup_df = pickup_df.astype(int)
+		dropoff_df = df[['dropoff_longitude','dropoff_latitude']]*1000000
+		dropoff_df = dropoff_df.astype(int)
+		pickup_dist,pickup_ind = kdtree.query(pickup_df,k=1)
+		dropoff_dist,dropoff_ind = kdtree.query(dropoff_df,k=1)
+		select_flag = np.logical_and(pickup_dist<limit,dropoff_dist<limit)
+		select_df = pd.DataFrame()
+		select_df['pickup_nodes'] = pickup_ind[select_flag]
+		select_df['dropoff_nodes'] = dropoff_ind[select_flag]
+		select_df['cost'] = np.array(df['trip_time_in_secs'])[select_flag.T[0]]
+		print select_df.info()	
+		select_df = select_df[select_df['pickup_nodes']!=select_df['dropoff_nodes']]
+		select_df.to_csv('data/'+str(limit)+'_select_nodes.csv')
+		print select_df.info()
+	else:
 	# read ==============================
-	select_df = pd.read_csv('data/'+str(limit)+'_select_nodes.csv')
-	print select_df.info()
+		select_df = pd.read_csv('data/'+str(limit)+'_select_nodes.csv')
+		print select_df.info()
 	return set(select_df['pickup_nodes']) | set(select_df['dropoff_nodes'])
 
 def sRoad(filename,nodes,ncores):
-	cost_file = 'data/old_cost.npy'
+	# cost_file = 'data/old_cost.npy'
 	# calc =======================
 	G = nx.Graph()
 	for line in open(filename,'r'):
@@ -53,30 +56,45 @@ def sRoad(filename,nodes,ncores):
 	print "generate into G.node num",len(G.nodes())
 	print "generate into G.edges num",len(G.edges())
 	nodelist = list(nodes)
+	nodelist.sort()
 	cost = dict()
-	print "calc cost distance between nodes"
+	print "calc cost distance between nodes",len(nodelist)
 		# ++++=pp-version =========
 	if ncores>1:
 	 	job_server = pp.Server(ncores) 
-	 	jobs = []
 	 	for s in nodelist:
+	 		print 'doing',s
+	 		jobs = []
 			for t in nodelist:
- 				jobs.append(job_server.submit(calcost,(G,s,t),(),("import networkx as nx",)))
-	 	for job in jobs:
-	 		s,t,c = job()
-	 		if s not in cost:
-				cost[s] = {}
-			cost[s][t] = c
+				if t in cost and s in cost[t]:
+					cost[s][t] = cost[t][s]
+				else:
+ 					jobs.append(job_server.submit(calcost,(G,s,t),(),("import networkx as nx",)))
+ 			job_server.wait()
+		 	for job in jobs:
+		 		job_ans = job()
+		 		s = job_ans[0]
+		 		t = job_ans[1]
+		 		c = job_ans[2]
+		 		print '===doing',t
+		 		if s not in cost:
+					cost[s] = {}
+				if t not in cost:
+					cost[t] = {}
+				cost[s][t] = c
+				cost[t][s] = c
 	else:
 		# ++++=1s-version ========
 		for s in nodelist:
+			print 'doing',s
 			if s not in cost:
 				cost[s] = {}
 				for t in nodelist:
+					print '===doing',t
 					if t in cost and s in cost[t]:
 						cost[s][t] = cost[t][s]
 					else:
-						cost[s][t] = nx.shortest_path_length(G,source=s,target=t)
+						cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
 		#===save data==========
 	np.save('data/new_nodes.npy', np.array(nodelist))
 	np.save('data/new_cost.npy', np.array(cost))
@@ -119,7 +137,7 @@ def pre_main_data():
 	nodes_set = get_nodes_trip(trip_file,nodes)
 	print "slect node num",len(nodes_set)
 	#=======================================================
-	G,cost = sRoad(graph_file,nodes_set,10)
+	G,cost = sRoad(graph_file,nodes_set,1)
 	#======================================================
 	# numQ = 1
 	# pt =0.5
