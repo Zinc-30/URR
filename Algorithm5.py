@@ -3,13 +3,6 @@ import pickle
 from time import clock
 from heapq import heappush, heappop
 
-
-def getCost(cost,x,y):
-	if x in cost and y in cost[x]:
-		return cost[x][y]
-	else:
-		return 1000000
-
 def _weight_function(G, weight):
     """Returns a function that returns the weight of an edge.
     The returned function is specifically suitable for input to
@@ -184,9 +177,10 @@ def areaConstruction(k,G):
 	return area,areadict,radius
 
 if __name__ == "__main__":
-	G = rd.readRoad()
-	cost = rd.readCost()
-	area = areaConstruction(3,G)
-	area = areaConstruction(10,G)
-	area = areaConstruction(20,G)
-	print area
+    G = rd.readRoad()
+    print 'G.node num',len(G.nodes())
+    print 'G.edges num',len(G.edges())
+    area = areaConstruction(3,G)
+    area = areaConstruction(10,G)
+    area = areaConstruction(20,G)
+    print area
