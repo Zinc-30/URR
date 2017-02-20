@@ -5,8 +5,15 @@ import pandas as pd
 from sklearn.neighbors import KDTree
 import pp
 import os
-def calcost(G,s,t):
-	return [s,t,nx.astar_path_length(G,source=s,target=t,weight='weight')]
+def calcost(G,subl,wl):
+	cost = dict()
+	for s in subl:
+		cost[s] = {}
+	 	print 'doing',s
+		for t in wl:
+			cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
+	return cost
+
 def sNodes(filename):
 	i = 0
 	nodes = []
@@ -17,8 +24,7 @@ def sNodes(filename):
 			node = [int(tmps[2]),int(tmps[3])]
 			nodes.append([node[0],node[1]])
 	return nodes
-def get_nodes_trip(filename,nodes):
-	limit = 75
+def get_nodes_trip(limit,filename,nodes):
 	if not os.path.exists('data/'+str(limit)+'_select_nodes.csv'):
 	# calc ==========================
 		kdtree = KDTree(nodes)
@@ -45,7 +51,7 @@ def get_nodes_trip(filename,nodes):
 		print select_df.info()
 	return set(select_df['pickup_nodes']) | set(select_df['dropoff_nodes'])
 
-def sRoad(filename,nodes,ncores):
+def sRoad(limit,filename,nodes,ncores):
 	# cost_file = 'data/old_cost.npy'
 	# calc =======================
 	G = nx.Graph()
@@ -55,34 +61,24 @@ def sRoad(filename,nodes,ncores):
 			G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
 	print "generate into G.node num",len(G.nodes())
 	print "generate into G.edges num",len(G.edges())
+	nx.write_gml(G,'data/'+str(limit)+'_graph.gml')
 	nodelist = list(nodes)
 	nodelist.sort()
 	cost = dict()
 	print "calc cost distance between nodes",len(nodelist)
 		# ++++=pp-version =========
 	if ncores>1:
-	 	job_server = pp.Server(ncores) 
-	 	for s in nodelist:
-	 		print 'doing',s
-	 		jobs = []
-			for t in nodelist:
-				if t in cost and s in cost[t]:
-					cost[s][t] = cost[t][s]
-				else:
- 					jobs.append(job_server.submit(calcost,(G,s,t),(),("import networkx as nx",)))
- 			job_server.wait()
-		 	for job in jobs:
-		 		job_ans = job()
-		 		s = job_ans[0]
-		 		t = job_ans[1]
-		 		c = job_ans[2]
-		 		print '===doing',t
-		 		if s not in cost:
-					cost[s] = {}
-				if t not in cost:
-					cost[t] = {}
-				cost[s][t] = c
-				cost[t][s] = c
+		jobs = []
+	 	job_server = pp.Server(ncores)
+	 	inter = len(nodelist)/ncores
+	 	for ni in range(ncores):
+	 		subl = nodelist[ni*inter:(ni+1)*inter]
+	 		jobs.append(job_server.submit(calcost,(G,subl,nodelist),(),("import networkx as nx",)))
+	 	jobs.append(job_server.submit(calcost,(G,nodelist[ncores*inter:],nodelist),(),("import networkx as nx",)))
+	 	job_server.wait()
+	 	for job in jobs:
+	 		job_ans = job()
+	 		cost.update(job_ans)
 	else:
 		# ++++=1s-version ========
 		for i in range(len(nodelist)):
@@ -93,18 +89,14 @@ def sRoad(filename,nodes,ncores):
 				cost[s] = {}
 			for j in range(len(nodelist)):
 				t = nodelist[j]
-				if j%10==0:
-					print '==doing',j,'/',len(nodelist)
 				if t not in cost[s]:
 					cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
 					if t not in cost:
 						cost[t] = {}
 					cost[t][s] = cost[s][t]
-			print cost[s]
 		#===save data==========
-	np.save('data1/new_nodes.npy', np.array(nodelist))
-	np.save('data1/new_cost.npy', np.array(cost))
-	nx.write_gml(G,"data1/new_graph.gml")
+	np.save('data/'+str(limit)+'_nodes.npy', np.array(nodelist))
+	np.save('data/'+str(limit)+'_cost.npy', np.array(cost))
 	print "finish save data"
 	# read ==========================
 	# cost = np.load(cost_file).tolist()
@@ -135,15 +127,16 @@ def sQuest(filename,count,pt,cost):
 	print quest
 
 def pre_main_data():
+	limit = 30
 	node_file = 'data/USA-road-d.NY.co'
 	graph_file = 'data/USA-road-t.NY.gr'
 	trip_file = 'data/trip_data_2.csv'
 	request_file = 'data/50_select_nodes.csv'
 	nodes = sNodes(node_file)
-	nodes_set = get_nodes_trip(trip_file,nodes)
+	nodes_set = get_nodes_trip(limit,trip_file,nodes)
 	print "slect node num",len(nodes_set)
 	#=======================================================
-	G,cost = sRoad(graph_file,nodes_set,1)
+	G,cost = sRoad(limit,graph_file,nodes_set,4)
 	#======================================================
 	# numQ = 1
 	# pt =0.5
