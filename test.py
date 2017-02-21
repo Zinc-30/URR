@@ -63,7 +63,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 
 def test_main():
 	result = pd.DataFrame([])
-	cost = rd.readCost('data/old_cost.npy')
+	cost = rd.readCost('data/50_cost.npy')
 	ncores = 17
 	jobs = []
 	job_server = pp.Server(ncores)
