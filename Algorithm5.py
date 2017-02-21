@@ -206,11 +206,11 @@ if __name__ == "__main__":
     G = rd.readRoad('data/50_graph.txt')
     print 'G.node num', len(G.nodes())
     print 'G.edges num', len(G.edges())
-    ncores = 1
+    ncores = 2
     if ncores > 1:
 	    jobs = []
-	    job_server = pp.Server(4)
-	    for ki in [5, 10, 20, 50]:
+	    job_server = pp.Server(5)
+	    for ki in [5, 10, 20, 50,100]:
 	    	jobs.append(job_server.submit(areaConstruction, (ki, G), (kShortestPathCpver, _dijkstra_multisource, _weight_function),
 	    	            ('import networkx as nx', 'from heapq import heappush, heappop', 'import readData as rd', 'from time import clock')))
 	    print 'job begin'
