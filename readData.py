@@ -44,7 +44,13 @@ def readUtility(numQ,numC):
 		return np.load(filename).tolist()
 	else:
 		print 'no utility data'
-
+def readSim(numQ,numQ1):
+	filename = 'data/'+str(numQ)+'.'+str(numQ1)+'-sim.npy'
+	if os.path.exists(filename):
+		print 'read sim data'
+		return np.load(filename).tolist()
+	else:
+		print 'no sim data'
 def getCost(x,y,cost):
 	if x in cost and y in cost[x]:
 		return cost[x][y]
