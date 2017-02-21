@@ -187,7 +187,7 @@ def areaConstruction(k, G):
 			if u not in nospc_dist or kspc_dist[v][u] < nospc_dist[u]:
 				nospc_dist[u] = kspc_dist[v][u]
 				areadict[u] = v
-	for u in nospc:
+	for u in areadict:
 		if areadict[u] not in radius or nospc_dist[u] >radius[areadict[u]]:
 			radius[areadict[u]] = nospc_dist[u]
 	end = clock()
@@ -216,4 +216,4 @@ if __name__ == "__main__":
 	    print 'job begin'
 	    job_server.wait()
 	    print 'job end'
-    areaConstruction(10,G)
+    areaConstruction(3,G)
