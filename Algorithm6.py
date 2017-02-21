@@ -28,8 +28,8 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 	print "gnew",len(quests)-len(grest)
 	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S,sim,paras)
 	for gx in gnew:
-		# carc = purnCars(gx[0],gx[1],cars,areadict,radius,cost)
-		S = Algorithm3.efficiencyGreedy(cost,cars,gx[0],utility,S,sim,paras)
+		carc = purnCars(gx[0],gx[1],cars,areadict,radius,cost)
+		S = Algorithm3.efficiencyGreedy(cost,carc,gx[0],utility,S,sim,paras)
 	return S
 
 
