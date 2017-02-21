@@ -72,26 +72,28 @@ class Algo1():
 	def ScheduleSingleRequest(self, S,car,request,questId):
 		costIncreament = 100000;
 		Sbest=[]
-		eTime = 0
-		if S == []: 
-			event = {'startLocation':car[0],'riders':set(),'endLocation':request[0],'deadline':request[1]}
-			event['startTime'] = eTime
-			eTime = eTime + self.getCost(event['startLocation'],event['endLocation'])
-			Sbest.append(event)
-			event = {'startLocation':request[0],'riders':set([questId]),'endLocation':request[3],'deadline':request[2]}
-			event['startTime'] = eTime
-			eTime = eTime + self.getCost(event['startLocation'],event['endLocation'])
-			Sbest.append(event)
-			fTime = event['deadline'] - event['startTime'] - self.getCost(event['startLocation'],event['endLocation'])
-			tempTime = [x['deadline'] - x['startTime'] - self.getCost(x['startLocation'],x['endLocation']) for x in Sbest];
-			tempTime.reverse()
-			Sbest.reverse()
-			for i in range(len(Sbest)):
-				fTime = min(fTime,tempTime[i])
-				if fTime<0:
-					return [];
-				Sbest[i]['flexibleTime'] = fTime;
-			Sbest.reverse()
+		if S == []:
+			eTime = 0
+			event1 = {'startLocation':car[0],'riders':set(),'endLocation':request[0],'deadline':request[1]}
+			event1['startTime'] = eTime
+			eTime = eTime + self.getCost(event1['startLocation'],event1['endLocation'])
+			if eTime<request[1]:	
+				event2 = {'startLocation':request[0],'riders':set([questId]),'endLocation':request[3],'deadline':request[2]}
+				event2['startTime'] = eTime
+				eTime = eTime + self.getCost(event2['startLocation'],event2['endLocation'])
+				if eTime<request[2]:
+					Sbest.append(event1)
+					Sbest.append(event2)
+					fTime = event2['deadline'] - event2['startTime'] - self.getCost(event2['startLocation'],event2['endLocation'])
+					tempTime = [x['deadline'] - x['startTime'] - self.getCost(x['startLocation'],x['endLocation']) for x in Sbest];
+					tempTime.reverse()
+					Sbest.reverse()
+					for i in range(len(Sbest)):
+						fTime = min(fTime,tempTime[i])
+						if fTime<0:
+							return [];
+						Sbest[i]['flexibleTime'] = fTime;
+					Sbest.reverse()
 			return Sbest
 		else:
 			waitPick = self.validEvents(S,request[0],request[1],car[1],1,questId)
