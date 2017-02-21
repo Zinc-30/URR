@@ -52,7 +52,7 @@ def moveRider(Sc,ri,cost):
 				S.reverse()
 	return S
 
-def bilateralArrangement(cost,cars,quests,utility,S,sim,paras):
+def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=None):
 	# tmpU = [[[u,ri] for (ri,u) in enumerate(rider)] for rider in utility]
 	# carList = []
 	# for li in tmpU:
@@ -60,25 +60,35 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras):
 	validmap = [[1 for i in range(len(cars))] for j in range(len(quests))]
 	questSet = set(range(len(quests)))
 	a1 = Algo1(cost)
+	if q2id:
+		id2q = dict(zip(q2id, range(len(q2id))))
 	while questSet:
-		rid = random.sample(questSet, 1)[0]
-		questSet.remove(rid)
+		ri = random.sample(questSet, 1)[0]
+		questSet.remove(ri)
 		max_u = 0
 		carid = -1
 		max_q = -1
 		max_s = []
-		for cid in range(len(cars)):
-			if validmap[rid][cid]:
+		for ci in range(len(cars)):
+			if validmap[ri][ci]:
+				if c2id:
+					cid = c2id[ci]
+				else:
+					cid = ci
+				if q2id:
+					rid = q2id[ri]
+				else:
+					rid = ri
 				u_now = rd.cal_u_car(cid,S[cid],utility,sim,cost,quests,paras)
 				tmps1 = a1.ScheduleSingleRequest(S[cid],cars[cid],quests[rid],rid)
 				if tmps1:
 					u_after = rd.cal_u_car(cid,tmps1,utility,sim,cost,quests,paras)
 					if u_after-u_now > max_u:
 						max_u = u_after-u_now
-						carid = cid
+						carid = ci
 						max_s = tmps1
 					elif u_after-u_now==max_u and rd.calCost(tmps1,cost)<rd.calCost(S[cid],cost):
-						carid = cid
+						carid = ci
 						max_s = tmps1
 				else:		
 					riders_inS = findRiders(S[cid])
@@ -90,15 +100,19 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras):
 							if u_after-u_now > max_u:
 								max_u = u_after-u_now
 								max_s = tmps2
-								carid = cid
-								max_q = qi
+								carid = ci
+								max_q = id2q[qi]
 							elif u_after-u_now==max_u and rd.calCost(tmps2,cost)<rd.calCost(S[cid],cost):
-								carid = cid
+								carid = ci
 								max_s = tmps2
-								max_q = qi 
+								max_q = id2q[qi] 
 		if carid>=0:
-			validmap[rid][carid] = 0
-			S[carid] = max_s
+			validmap[ri][carid] = 0
+			if c2id:
+				cid = c2id[carid]
+			else:
+				cid = carid
+			S[cid] = max_s
 			if max_q>=0:
 				validmap[max_q][carid] = 1
 				questSet.add(max_q)	
