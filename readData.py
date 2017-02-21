@@ -77,7 +77,7 @@ def cal_u(cid,rid,S,s1,t1,utility,sim,cost,paras):
 					u2 += rate/(len(x['riders'])-1)*sim[r][rid]
 			cost_sum += cost_x
 	u3 = 2/(1+np.exp(cost_sum/getCost(s1,t1,cost)))
-	return u1*paras[0]+u2*paras[1]+u3*paras[2]
+	return u1*paras[0]+u2*paras[1]+u3*(1-paras[2])
 
 def cal_u_car(cid,S,utility,sim,cost,quests,paras):
 	riders = set([])
