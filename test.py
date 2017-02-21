@@ -104,7 +104,6 @@ def test_main():
 		jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6')))
-	quests = rd.readQuests(3,10)
 
 	# test quest eps
 	for eps in [1.2,1.7,2.0]:
