@@ -6,6 +6,7 @@ from sklearn.neighbors import KDTree
 import pp
 import os
 import pickle
+import readData as rd
 def calcost(G,subl,wl):
 	cost = dict()
 	for s in subl:
@@ -38,10 +39,10 @@ def get_nodes_trip(limit,filename,nodes):
 		nodesh = np.logical_and(pickup_ind>132000,dropoff_ind>132000)
 		select_flag = np.logical_and(select_flag,nodesh)
 		select_df = pd.DataFrame()
-		select_df['pickup_nodes'] = pickup_ind[select_flag]+1
-		select_df['dropoff_nodes'] = dropoff_ind[select_flag]+1
+		select_df['pickup_nodes'] = pickup_ind[select_flag]
+		select_df['dropoff_nodes'] = dropoff_ind[select_flag]
 		select_df['cost'] = np.array(df['trip_time_in_secs'])[select_flag.T[0]]
-		print select_df.info()	
+		print 'purn data and write'
 		select_df = select_df[select_df['pickup_nodes']!=select_df['dropoff_nodes']]
 		select_df.to_csv('data/'+str(limit)+'_select_nodes.csv')
 		print select_df.info()
@@ -54,77 +55,77 @@ def get_nodes_trip(limit,filename,nodes):
 def sRoad(limit,filename,nodes,ncores):
 	# cost_file = 'data/old_cost.npy'
 	# calc =======================
-	G = nx.Graph()
-	for line in open(filename,'r'):
-		tmps = line[:-1].split(' ')
-		if tmps[0] == 'a' and int(tmps[1])>132000 and int(tmps[2])>132000:
-			G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
-	print "generate into G.node num",len(G.nodes())
-	print "generate into G.edges num",len(G.edges())
-	pickle.dump(G, open('data/'+str(limit)+'_graph.txt', 'w'))
-	nodelist = list(nodes)
-	nodelist.sort()
-	cost = dict()
-	print "calc cost distance between nodes",len(nodelist)
-		# ++++=pp-version =========
-	if ncores>1:
-		jobs = []
-	 	job_server = pp.Server(ncores)
-	 	inter = len(nodelist)/ncores
-	 	for ni in range(ncores):
-	 		subl = nodelist[ni*inter:(ni+1)*inter]
-	 		jobs.append(job_server.submit(calcost,(G,subl,nodelist),(),("import networkx as nx",)))
-	 	jobs.append(job_server.submit(calcost,(G,nodelist[ncores*inter:],nodelist),(),("import networkx as nx",)))
-	 	job_server.wait()
-	 	for job in jobs:
-	 		job_ans = job()
-	 		cost.update(job_ans)
-	else:
-		# ++++=1s-version ========
-		for i in range(len(nodelist)):
-			s = nodelist[i]
-			if i%10==0:
-				print 'doing',s,i,'/',len(nodelist)
-			if s not in cost:
-				cost[s] = {}
-			for j in range(len(nodelist)):
-				t = nodelist[j]
-				if t not in cost[s]:
-					cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
-					if t not in cost:
-						cost[t] = {}
-					cost[t][s] = cost[s][t]
-		#===save data==========
-	np.save('data/'+str(limit)+'_nodes.npy', np.array(nodelist))
-	np.save('data/'+str(limit)+'_cost.npy', np.array(cost))
-	print "finish save data"
+	if not os.path.exists('data/'+str(limit)+'_cost.npy'):
+		G = nx.Graph()
+		for line in open(filename,'r'):
+			tmps = line[:-1].split(' ')
+			if tmps[0] == 'a' and int(tmps[1])>132000 and int(tmps[2])>132000:
+				G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
+		print "generate into G.node num",len(G.nodes())
+		print "generate into G.edges num",len(G.edges())
+		pickle.dump(G, open('data/'+str(limit)+'_graph.txt', 'w'))
+		nodelist = list(nodes)
+		nodelist.sort()
+		cost = dict()
+		print "calc cost distance between nodes",len(nodelist)
+			# ++++=pp-version =========
+		if ncores>1:
+			jobs = []
+		 	job_server = pp.Server(ncores)
+		 	inter = len(nodelist)/ncores
+		 	for ni in range(ncores):
+		 		subl = nodelist[ni*inter:(ni+1)*inter]
+		 		jobs.append(job_server.submit(calcost,(G,subl,nodelist),(),("import networkx as nx",)))
+		 	jobs.append(job_server.submit(calcost,(G,nodelist[ncores*inter:],nodelist),(),("import networkx as nx",)))
+		 	job_server.wait()
+		 	for job in jobs:
+		 		job_ans = job()
+		 		cost.update(job_ans)
+		else:
+			# ++++=1s-version ========
+			for i in range(len(nodelist)):
+				s = nodelist[i]
+				if i%10==0:
+					print 'doing',s,i,'/',len(nodelist)
+				if s not in cost:
+					cost[s] = {}
+				for j in range(len(nodelist)):
+					t = nodelist[j]
+					if t not in cost[s]:
+						cost[s][t] = nx.astar_path_length(G,source=s,target=t,weight='weight')
+						if t not in cost:
+							cost[t] = {}
+						cost[t][s] = cost[s][t]
+			#===save data==========
+		np.save('data/'+str(limit)+'_nodes.npy', np.array(nodelist))
+		np.save('data/'+str(limit)+'_cost.npy', np.array(cost))
+		print "finish save data"
 	# read ==========================
-	# cost = np.load(cost_file).tolist()
-	# G_new = nx.read_gml("data/new_graph.gml")
-	return G,cost
-def sCars(num,nodes,room):
+	else:
+		cost = np.load('data/'+str(limit)+'_cost.npy').tolist()
+	return cost
+
+def sCars(num,room,nodes):
 	cars = []
 	for i in range(num):
 		lid = random.sample(nodes,1)[0]
 		cars.append([lid,room])
+	np.save('data/'+str(num)+'.'+str(room)+'-cars.npy',np.array(cars))
 	return cars
 def sQuest(filename,count,pt,cost):
 	# =================================
-	df = pd.read_csv(filename)
-	select_df = df[df['pickup_nodes']!=df['dropoff_nodes']]
-	print select_df.info()
-	# =================================
+	df = pd.read_csv('data/'+str(count)+'K_trips.csv')
 	quest = []
-	for i in range(count*10):
-		rid = random.randint(0,len(df))
-		bnode = select_df.iloc[rid]['pickup_nodes']
-		enode = select_df.iloc[rid]['dropoff_nodes']
-		timec = select_df.iloc[rid]['cost']
-		btime = random.randint(pt,pt+300)
-		etime = btime + timec
-		print bnode,enode,timec,cost[bnode][enode]
+	# =================================
+	for rid in range(len(df)):
+		bnode = int(df.iloc[rid][0])
+		enode = int(df.iloc[rid][1])
+		timec = df.iloc[rid][2]/60
+		btime = random.randint(pt[0],pt[1])
+		etime = btime + timec*5
+		# print bnode,enode,timec,cost[bnode][enode]
 		quest.append([bnode,btime,etime,enode])
-	print quest
+	np.save('data/'+str(count)+'.'+str(pt[0])+'-quests.npy',np.array(quest))
 
 def pre_main_data():
 	limit = 50
@@ -136,49 +137,23 @@ def pre_main_data():
 	nodes_set = get_nodes_trip(limit,trip_file,nodes)
 	print "slect node num",len(nodes_set)
 	#=======================================================
-	G,cost = sRoad(limit,graph_file,nodes_set,1)
+	cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
-	# numQ = 1
-	# pt =0.5
-	# quest = sQuest(request_file,numQ,pt*60,cost)
-	# print quest
-	# qlen = []
-	# for numQ in [1,2,3,4,5]:
-	# 	if numQ == 3:
-	# 		for pt in [0,5,10,15]:
-	# 			quest = sQuest(request_file,area,nodes,numQ,pt*60)
-	# 			filename = 'data/'+str(numQ)+'.'+str(pt)+'-quests.npy'
-	# 			np.save(filename, np.array(quest))
-	# 	else:
-	# 		quest = sQuest(request_file,area,nodes,numQ,300)
-	# 		filename = 'data/'+str(numQ)+'.'+str(5)+'-quests.npy'
-	# 		np.save(filename, np.array(quest))
-	# print "generate quest"
+	for count in [1,3,5,8,10]:
+		for pt in [[1,10],[10,30],[30,60]]:
+			sQuest(request_file,count,pt,cost)
+	for count in [100,200,300,400,500]:
+		for room in [2,3,4,5]:
+			sCars(count,room,nodes_set)
+	for ncars in [100,200,300,400,500]:
+		for nquest in [1,3,5,8,10]:
+			utility = [[random.random() for i in range(ncars)] for j in range(nquest*1000)]
+			np.save('data/'+str(nquest)+'.'+str(ncars)+'-utility.npy',np.array(utility))
+	for nquest in [1,3,5,8,10]:
+		for nquest in [1,3,5,8,10]:
+			sim = [[random.random() for i in range(nquest*1000)] for j in range(nquest*1000)]
+			np.save('data/'+str(nquest)+'.'+str(nquest)+'-sim.npy',np.array(sim))
 
-	# for numC in [5,8,10,30,50]:
-	# 	if numC == 10:
-	# 		for roomC in [2,3,4,5]:
-	# 			cars = sCars(numC*100,len(nodes),roomC)
-	# 			filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
-	# 			np.save(filename, np.array(cars))
-	# 	else:
-	# 		roomC = 3
-	# 		cars = sCars(numC*100,len(nodes),roomC)
-	# 		filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
-	# 		np.save(filename, np.array(cars))
-	# print "generate cars"
-
-	# for numC in [5,8,10,30,50]:
-	# 	if numC == 10:
-	# 		for ql in [1,3,5,8,10]:
-	# 			utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(ql*1000)]
-	# 			filename = 'data/'+str(ql)+'.'+str(numC)+'-utility.npy'
-	# 			np.save(filename, np.array(utility))
-	# 	else:
-	# 		utility = [[random()/2+0.5 for i in range(numC*100)] for j in range(3000)]
-	# 		filename = 'data/'+str(3)+'.'+str(numC)+'-utility.npy'
-	# 		np.save(filename, np.array(utility))
-	# print "generate utility"
 
 def pre_toy_data():
 	nquest = 8
