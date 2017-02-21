@@ -102,6 +102,7 @@ def sRoad(limit,filename,nodes,ncores):
 		print "finish save data"
 	# read ==========================
 	else:
+		print 'read cost'
 		cost = np.load('data/'+str(limit)+'_cost.npy').tolist()
 	return cost
 
@@ -139,16 +140,22 @@ def pre_main_data():
 	#=======================================================
 	cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
+	print 'doing riders'
 	for count in [1,3,5,8,10]:
 		for pt in [[1,10],[10,30],[30,60]]:
 			sQuest(request_file,count,pt,cost)
+
+	print 'doing cars'
 	for count in [100,200,300,400,500]:
 		for room in [2,3,4,5]:
 			sCars(count,room,nodes_set)
+	print 'doing utility'
 	for ncars in [100,200,300,400,500]:
 		for nquest in [1,3,5,8,10]:
 			utility = [[random.random() for i in range(ncars)] for j in range(nquest*1000)]
 			np.save('data/'+str(nquest)+'.'+str(ncars)+'-utility.npy',np.array(utility))
+			
+	print 'doing similarity'
 	for nquest in [1,3,5,8,10]:
 		for nquest in [1,3,5,8,10]:
 			sim = [[random.random() for i in range(nquest*1000)] for j in range(nquest*1000)]
