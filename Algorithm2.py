@@ -40,7 +40,7 @@ def moveRider(Sc,ri,cost):
 			for i in range(upId,len(S)-1):
 				S[i+1]['startTime'] = S[i]['startTime']+ rd.getCost(S[i]['startLocation'],S[i]['endLocation'],cost)
 			for i in range(downId-1,upId,-1):
-				tempTime = [x['deadline'] - x['startTime'] - rd.getCost(x['startLocation'],x['endLocation']) for x in S];
+				tempTime = [x['deadline'] - x['startTime'] - rd.getCost(x['startLocation'],x['endLocation'],cost) for x in S];
 				tempTime.reverse()
 				fTime = tempTime[0]
 				S.reverse()
