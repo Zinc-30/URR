@@ -54,9 +54,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
 	for i in range(5):
-		# ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
-		time = 1
-		sumu = 1.5
+		ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 		res.append(time)
 		res.append(sumu)
 	s = pd.Series(res,index = ['2-time','2-u','3-time','3-u','6-time','6-u','gt-time','gt-u','gu-time','gu-u'])
