@@ -20,8 +20,7 @@ def sNodes(filename):
 		tmps = line[:-1].split(' ')
 		i = i + 1
 		if tmps[0] == 'v':
-			node = [int(tmps[2]),int(tmps[3])]
-			nodes.append([node[0],node[1]])
+			nodes.append([int(tmps[2]),int(tmps[3])])
 	return nodes
 def get_nodes_trip(limit,filename,nodes):
 	if not os.path.exists('data/'+str(limit)+'_select_nodes.csv'):
@@ -36,9 +35,11 @@ def get_nodes_trip(limit,filename,nodes):
 		pickup_dist,pickup_ind = kdtree.query(pickup_df,k=1)
 		dropoff_dist,dropoff_ind = kdtree.query(dropoff_df,k=1)
 		select_flag = np.logical_and(pickup_dist<limit,dropoff_dist<limit)
+		nodesh = np.logical_and(pickup_ind>132000,dropoff_ind>132000)
+		select_flag = np.logical_and(select_flag,nodesh)
 		select_df = pd.DataFrame()
-		select_df['pickup_nodes'] = pickup_ind[select_flag]
-		select_df['dropoff_nodes'] = dropoff_ind[select_flag]
+		select_df['pickup_nodes'] = pickup_ind[select_flag]+1
+		select_df['dropoff_nodes'] = dropoff_ind[select_flag]+1
 		select_df['cost'] = np.array(df['trip_time_in_secs'])[select_flag.T[0]]
 		print select_df.info()	
 		select_df = select_df[select_df['pickup_nodes']!=select_df['dropoff_nodes']]
@@ -135,7 +136,7 @@ def pre_main_data():
 	nodes_set = get_nodes_trip(limit,trip_file,nodes)
 	print "slect node num",len(nodes_set)
 	#=======================================================
-	G,cost = sRoad(limit,graph_file,nodes_set,11)
+	G,cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
 	# numQ = 1
 	# pt =0.5
