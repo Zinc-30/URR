@@ -216,4 +216,5 @@ if __name__ == "__main__":
 	    print 'job begin'
 	    job_server.wait()
 	    print 'job end'
-    areaConstruction(3,G)
+    else:
+    	areaConstruction(3,G)
