@@ -56,12 +56,11 @@ def sRoad(limit,filename,nodes,ncores):
 	G = nx.Graph()
 	for line in open(filename,'r'):
 		tmps = line[:-1].split(' ')
-		if tmps[0] == 'a':
+		if tmps[0] == 'a' and int(tmps[1])>132000 and int(tmps[2])>132000:
 			G.add_edge(int(tmps[1]), int(tmps[2]), weight = int(tmps[3]))
 	print "generate into G.node num",len(G.nodes())
 	print "generate into G.edges num",len(G.edges())
 	pickle.dump(G, open('data/'+str(limit)+'_graph.txt', 'w'))
-	nx.write_gml(G,'data/'+str(limit)+'_graph.gml')
 	nodelist = list(nodes)
 	nodelist.sort()
 	cost = dict()
@@ -127,9 +126,9 @@ def sQuest(filename,count,pt,cost):
 	print quest
 
 def pre_main_data():
-	limit = 75
+	limit = 50
 	node_file = 'data/USA-road-d.NY.co'
-	graph_file = 'data/USA-road-t.NY.gr'
+	graph_file = 'data/USA-road-d.NY.gr'
 	trip_file = 'data/trip_data_2.csv'
 	request_file = 'data/50_select_nodes.csv'
 	nodes = sNodes(node_file)
