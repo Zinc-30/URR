@@ -58,7 +58,7 @@ def getCost(x,y,cost):
 		return 1000000
 
 def calCost(S,cost):
-	costTime = 0;
+	costTime = 0
 	for x in S:
 		costTime = costTime + getCost(x['startLocation'],x['endLocation'],cost)
 	return costTime
