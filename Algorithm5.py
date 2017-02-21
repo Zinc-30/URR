@@ -6,6 +6,7 @@ from time import clock
 from heapq import heappush, heappop
 import pp
 
+
 def _weight_function(G, weight):
     """Returns a function that returns the weight of an edge.
     The returned function is specifically suitable for input to
@@ -40,7 +41,7 @@ def _weight_function(G, weight):
     return lambda u, v, data: data.get(weight, 1)
 
 
-def _dijkstra_multisource(G, sources, weight, pred=None, cutoff=None, target=None):
+def _dijkstra_multisource(G, sources, Cset,weight,pred=None, cutoff=None, target=None):
     """Uses Dijkstra's algorithm to find shortest weighted paths
     Parameters
     ----------
@@ -86,13 +87,22 @@ def _dijkstra_multisource(G, sources, weight, pred=None, cutoff=None, target=Non
     pop = heappop
     dist = {}  # dictionary of final distances
     seen = {}
-    # fringe is heapq with 3-tuples (distance,c,node)
+    in_c = {}
+    # fringe is heapq with 3-tuples (distance,depth,mark,node)
     fringe = []
     for source in sources:
         seen[source] = 0
+        in_c[source] = 1
         push(fringe, (0, 0, source))
     while fringe:
+    	flag = 1
+    	for x in in_c:
+    		flag = in_c[x] and flag
+    		if not flag:
+    			break
         (d, dpt, v) = pop(fringe)
+        if flag and v!= source:
+    		break
         if v in dist:
             continue  # already searched this node.
         dist[v] = d
@@ -113,6 +123,7 @@ def _dijkstra_multisource(G, sources, weight, pred=None, cutoff=None, target=Non
                                      'negative weights?')
             elif u not in seen or vu_dist < seen[u]:
                 seen[u] = vu_dist
+                in_c[u] = in_c[v] and (u in Cset)
                 push(fringe, (vu_dist, vu_dpt, u))
                 if paths is not None:
                     paths[u] = paths[v] + [u]
@@ -121,6 +132,7 @@ def _dijkstra_multisource(G, sources, weight, pred=None, cutoff=None, target=Non
             elif vu_dist == seen[u]:
                 if pred is not None:
                     pred[u].append(v)
+        del in_c[v]
 
     # The optional predecessor and path dictionaries can be accessed
     # by the caller via the pred and paths objects passed as arguments.
@@ -132,14 +144,14 @@ def kShortestPathCpver(k, G):
 	kspc_dist = {}
 	for v in G.nodes():
 		C.remove(v)
-		v_dist, v_tree = _dijkstra_multisource(G, [v], weight='weight', cutoff=k)
+		v_dist, v_tree = _dijkstra_multisource(G, [v], C,weight='weight', cutoff=k)
 		flag = 1
 		for w in v_tree:
 			if flag:
 				if w != v and w in C:
-					w_dist, w_tree = _dijkstra_multisource(G, [w], weight='weight', cutoff=k)
+					w_dist, w_tree = _dijkstra_multisource(G, [w], C,weight='weight', cutoff=k)
 					for x in w_tree:
-						if (v in set(w_tree[x])) and len(w_tree[x]) - 1 >= k and (not (set(w_tree[x]) - set([w]) & C)):
+						if (v in set(w_tree[x])) and (len(w_tree[x]) - 1 >= k) and (not (set(w_tree[x]) - set([w]) & C)):
 							C.add(v)
 							kspc_dist[v] = v_dist
 							flag = 0
@@ -148,54 +160,60 @@ def kShortestPathCpver(k, G):
 				break
 	return C, kspc_dist
 
+
 def areaConstruction(k, G):
 	start = clock()
 	kSpc, kspc_dist = kShortestPathCpver(k, G)
 	end = clock()
-	print '=======',k,'========'
-	print 'kspc time',end-start
-	print 'kspc num',len(kSpc)
-	print 'rest num',len(set(G.nodes())-kSpc)
+	print '=======', k, '========'
+	print 'kspc time', end - start
+	print 'kspc num', len(kSpc)
+	print 'rest num', len(set(G.nodes()) - kSpc)
 	area = {}
 	radius = {}
 	areadict = {}
+	nospc_dist = {}
 	start = clock()
 	for u in kSpc:
 		area[u] = set([u])
 		areadict[u] = u
 		radius[u] = 0
-	for u in set(G.nodes())-kSpc:
-		min_dist = 10000000
-		for v in kSpc:
-			if u in kspc_dist[v] and kspc_dist[v][u]<min_dist:
-				min_dist = kspc_dist[v][u]
-				vt = v
-		area[vt].add(u)	
-		areadict[u] = vt
-		if min_dist > radius[vt]:
-			radius[vt] = min_dist
+	nospc = list(set(G.nodes()) - kSpc)
+	spc = list(kSpc)
+	nospc.sort()
+	spc.sort()
+	for v in spc:
+		for u in kspc_dist[v]:
+			if u not in nospc_dist or kspc_dist[v][u] < nospc_dist[u]:
+				nospc_dist[u] = kspc_dist[v][u]
+				areadict[u] = v
+	for u in nospc:
+		if areadict[u] not in radius or nospc_dist[u] >radius[areadict[u]]:
+			radius[areadict[u]] = nospc_dist[u]
 	end = clock()
-	print 'pair time',end-start
-	filename = 'data/area-'+str(k)+'.txt'
-	pickle.dump(area, open(filename, 'w'))
-	filename = 'data/areadict-'+str(k)+'.npy'
+	print 'pair time', end - start
+	# filename = 'data/area-' + str(k) + '.txt'
+	# pickle.dump(area, open(filename, 'w'))
+	filename = 'data/areadict-' + str(k) + '.npy'
 	pickle.dump(areadict, open(filename, 'w'))
-	filename = 'data/areaR-'+str(k)+'.npy'
+	filename = 'data/areaR-' + str(k) + '.npy'
 	pickle.dump(radius, open(filename, 'w'))
 	print 'write area data'
 	print len(area)
-	return area,areadict,radius
+	return area, areadict, radius
 
 if __name__ == "__main__":
-    G = rd.readRoad('data/graph.txt')
-    print 'G.node num',len(G.nodes())
-    print 'G.edges num',len(G.edges())
-    jobs = []
-    job_server = pp.Server(4)
-    for ki in [5,10,20,50]:
-    	jobs.append(job_server.submit(areaConstruction,(ki,G),(kShortestPathCpver,_dijkstra_multisource,_weight_function),('import networkx as nx','from heapq import heappush, heappop','import readData as rd','from time import clock')))
-    print 'job begin'
-    job_server.wait()
-    print 'job end'
-
-
+    G = rd.readRoad('data/50_graph.txt')
+    print 'G.node num', len(G.nodes())
+    print 'G.edges num', len(G.edges())
+    ncores = 1
+    if ncores > 1:
+	    jobs = []
+	    job_server = pp.Server(4)
+	    for ki in [5, 10, 20, 50]:
+	    	jobs.append(job_server.submit(areaConstruction, (ki, G), (kShortestPathCpver, _dijkstra_multisource, _weight_function),
+	    	            ('import networkx as nx', 'from heapq import heappush, heappop', 'import readData as rd', 'from time import clock')))
+	    print 'job begin'
+	    job_server.wait()
+	    print 'job end'
+    areaConstruction(10,G)
