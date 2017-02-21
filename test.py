@@ -9,8 +9,9 @@ import baseline_cost
 import baseline_utility
 from time import clock
 import os
+import pp
 
-def task(method,cost,quests,cars,utility,sim,paras,G,k):
+def task(method,cost,quests,cars,utility,sim,paras,k):
 	def getDict(k):
 		filename = 'data/areadict-'+str(k)+'.npy'
 		if os.path.exists(filename):
@@ -49,41 +50,82 @@ def task(method,cost,quests,cars,utility,sim,paras,G,k):
 	print "sum utility", sum_u
 	return ans,time,sum_u
 
-def test(cost,quests,cars,utility,sim,G,k,paras):
+def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
-	result = []
-	# result.append([numq,numc,pt,roomc])
+	res = []
 	for i in range(5):
-		if i!=2:
-			ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,G,k)
-			result.append(time)
-			result.append(sumu)
-	return result
+		# ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
+		time = 1
+		sumu = 1.5
+		res.append(time)
+		res.append(sumu)
+	s = pd.Series(res,index = ['2-time','2-u','3-time','3-u','6-time','6-u','gt-time','gt-u','gu-time','gu-u'])
+	return testname,s
 
 def test_main():
-	G = rd.readRoad()
-	cost = rd.readCost()
-	quests = rd.readQuests(3,5)
-	cars = rd.readCars(10,3)
-	utility = rd.readUtility(3,10)
-	# finish read data
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3
-	result = pd.DataFrame([],columns=['2-time','2-sumu','3-time','3-sumu','6-time','6-sumu'])
-	# tA5(30)
-	for pt in [0,10,5]:
-		quests = rd.readQuests(3,pt)
-		result.append(test(numq,numc,pt,roomc))
-	numq = 3
-	numc = 10
-	pt = 5
-	roomc = 3	
-	for roomc in [2,5,4,3]:
-		cars = rd.readCars(10,roomc)
-		if roomc!=3:
-			result.append(test(numq,numc,pt,roomc))
+	result = pd.DataFrame([])
+	cost = rd.readCost('data/old_cost.npy')
+	ncores = 1
+	jobs = []
+	job_server = pp.Server(ncores)
+
+	# test defult
+	cars = rd.readCars(200,3)
+	quests = rd.readQuests(3,1)
+	utility = rd.readUtility(3,200)
+	sim = rd.readSim(3,3)
+	k = 5
+	paras = [0.33,0.33]
+	jobs.append(job_server.submit(test,('default',cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+	
+	# test paras
+	for paras in [[1,0],[0,0],[0,1]]:
+		jobs.append(job_server.submit(test,('test para'+str(paras),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+	paras = [0.33,0.33]
+
+	# test quest num
+	for count in [1,5,8,10]:
+		quests = rd.readQuests(count,1)
+		utility = rd.readUtility(count,200)
+		sim = rd.readSim(count,count)
+		jobs.append(job_server.submit(test,('test rider_num'+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+	quests = rd.readQuests(3,1)
+	utility = rd.readUtility(3,200)
+	sim = rd.readSim(3,3)
+
+	# test quest pt
+	for pt in [[10,30],[30,60]]:
+		quests = rd.readQuests(3,pt[0])
+		jobs.append(job_server.submit(test,('test rider_pt'+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+	quests = rd.readQuests(3,1)
+
+	# test car num
+	for count in [100,300,400,500]:
+		cars = rd.readCars(count,3)
+		utility = rd.readUtility(3,count)
+		jobs.append(job_server.submit(test,('test car_num'+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+	cars = rd.readCars(200,3)
+	utility = rd.readUtility(3,200)	
+
+	# test car room
+	for room in [2,4,5]:
+		cars = rd.readCars(200,room)
+		jobs.append(job_server.submit(test,('test car_room'+str(room),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','import baseline_cost','import baseline_utility','import numpy as np','import pandas as pd','import readData as rd')))
+
+	for job in jobs:
+		job_name,job_ans = job()
+		result[job_name] = job_ans
+	result.to_csv('data/result.csv')
+
+
+	
+
 
 def test_toy():
 	cost = np.load('toy_cost.npy').tolist()
@@ -93,11 +135,11 @@ def test_toy():
 	sim = np.load('toy_sim.npy').tolist()
 	nquest = len(quests)
 	ncars = len(cars)
-	G=0
 	k=0
 	print nquest,ncars
-	print test(cost,quests,cars,utility,sim,G,k,[0.5,0.3,0.2])
+	print test(cost,quests,cars,utility,sim,k,[0.5,0.3,0.2])
 	print 'best',2.3301756318
 
 if __name__ == "__main__":
-	test_toy()
+	# test_toy()
+	test_main()
