@@ -36,7 +36,7 @@ def task(method,cost,quests,cars,utility,sim,paras,k):
 	elif method ==2:
 		areadict = getDict(k)
 		radius = getRadius(k)
-		ans = A6.groupScheduling(cost,cars,quests,utility,S,areadict,radius,paras)
+		ans = A6.groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras)
 	elif method ==3:
 		ans = baseline_cost.costGreedy(cost,cars,quests,utility,S,sim,paras)
 	elif method ==4:
