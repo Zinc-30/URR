@@ -163,7 +163,7 @@ def pre_main_data():
 
 
 def pre_toy_data():
-	nquest = 8
+	nquest = 6
 	ncars = 3
 	G = nx.Graph()
 	for i in range(40):
