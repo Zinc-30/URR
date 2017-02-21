@@ -21,8 +21,8 @@ def readCost(fname='data/cost.npy'):
 		print 'no cost data'
 	return cost
 
-def readQuests(numQ,pt):
-	filename = 'data/'+str(numQ)+'.'+str(pt)+'-quests.npy'
+def readQuests(numQ,pt,eps):
+	filename = 'data/'+str(numQ)+'.'+str(pt)+'.'+str(eps)+'-quests.npy'
 	if os.path.exists(filename):
 		print 'read request data'
 		return np.load(filename).tolist()

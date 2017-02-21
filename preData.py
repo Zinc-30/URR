@@ -113,7 +113,7 @@ def sCars(num,room,nodes):
 		cars.append([lid,room])
 	np.save('data/'+str(num)+'.'+str(room)+'-cars.npy',np.array(cars))
 	return cars
-def sQuest(filename,count,pt,cost):
+def sQuest(count,pt,eps,cost):
 	# =================================
 	df = pd.read_csv('data/'+str(count)+'K_trips.csv')
 	quest = []
@@ -121,19 +121,19 @@ def sQuest(filename,count,pt,cost):
 	for rid in range(len(df)):
 		bnode = int(df.iloc[rid][0])
 		enode = int(df.iloc[rid][1])
-		timec = df.iloc[rid][2]/60
+		timec = rd.getCost(bnode,enode,cost)
 		btime = random.randint(pt[0],pt[1])
-		etime = btime + timec*5
+		etime = btime + timec * eps
 		# print bnode,enode,timec,cost[bnode][enode]
 		quest.append([bnode,btime,etime,enode])
-	np.save('data/'+str(count)+'.'+str(pt[0])+'-quests.npy',np.array(quest))
+	np.save('data/'+str(count)+'.'+str(pt[0])+'.'+str(eps)+'-quests.npy',np.array(quest))
 
 def pre_main_data():
 	limit = 50
 	node_file = 'data/USA-road-d.NY.co'
 	graph_file = 'data/USA-road-d.NY.gr'
 	trip_file = 'data/trip_data_2.csv'
-	request_file = 'data/50_select_nodes.csv'
+	# request_file = 'data/50_select_nodes.csv'
 	nodes = sNodes(node_file)
 	nodes_set = get_nodes_trip(limit,trip_file,nodes)
 	print "slect node num",len(nodes_set)
@@ -143,7 +143,9 @@ def pre_main_data():
 	print 'doing riders'
 	for count in [1,3,5,8,10]:
 		for pt in [[1,10],[10,30],[30,60]]:
-			sQuest(request_file,count,pt,cost)
+			sQuest(count,pt,1.5,cost)
+	for eps in [1.2,1.7,2.0]:
+		sQuest(3,[10,30],eps,cost)
 
 	print 'doing cars'
 	for count in [100,200,300,400,500]:
