@@ -101,14 +101,14 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 								max_u = u_after-u_now
 								max_s = tmps2
 								carid = ci
-								if id2q:
+								if q2id:
 									max_q = id2q[qi]
 								else:
 									max_q = qi
 							elif u_after-u_now==max_u and rd.calCost(tmps2,cost)<rd.calCost(S[cid],cost):
 								carid = ci
 								max_s = tmps2
-								if id2q:
+								if q2id:
 									max_q = id2q[qi]
 								else:
 									max_q = qi 
