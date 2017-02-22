@@ -1,4 +1,4 @@
-import Algorithm2
+import Algorithm3
 import readData as rd
 
 def purnCars(quests,center,cars,areadict,radius,cost):
@@ -33,10 +33,10 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 			grest.append(q)
 			q2id_rest.append(qi)
 	gnew = sorted(g,key = lambda x:len(g[x]),reverse=1)
-	S = Algorithm2.bilateralArrangement(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest,quests_all = quests)
+	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest,quests_all = quests)
 	for c in gnew:
 		carc, carcid = purnCars(g[c],c,cars,areadict,radius,cost)
-		S = Algorithm2.bilateralArrangement(cost,carc,g[c],utility,S,sim,paras,c2id = carcid,q2id = q2id_g[c],quests_all = quests)
+		S = Algorithm3.efficiencyGreedy(cost,carc,g[c],utility,S,sim,paras,c2id = carcid,q2id = q2id_g[c],quests_all = quests)
 	return S
 
 
