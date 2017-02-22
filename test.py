@@ -53,11 +53,17 @@ def task(method,cost,quests,cars,utility,sim,paras,k):
 def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
-	for i in [3,4,1,2,0]:
+	for i in range(5):
 		ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 		res.append(time)
 		res.append(sumu)
-	s = pd.Series(res,index = ['2-time','2-u','3-time','3-u','6-time','6-u','gt-time','gt-u','gu-time','gu-u'])
+		Riders = set()
+		for x in ans:
+			Riders = Riders|x['riders']
+		sum_r = len(Riders)
+		res.append(sum_r)
+	s = pd.Series(res,index = ['2-time','2-u','2-r','3-time','3-u','3-r','6-time','6-u','6-r',\
+		'gt-time','gt-u','gt-r','gu-time','gu-u','gu-r'])
 	s.to_csv('data/'+testname+'.csv')
 	return testname,s
 
