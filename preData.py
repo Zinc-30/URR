@@ -141,14 +141,14 @@ def pre_main_data():
 	cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
 	print 'doing riders'
-	pt = [10,30]
+	pt = [1,10]
 	for count in [1,3,5,8,10]:
 		sQuest(count,pt,1.5,cost)
 	for pt in [[10,30],[30,60]]:
 		sQuest(3,pt,1.5,cost)
 
 	for eps in [1.2,1.7,2.0]:
-		sQuest(3,[10,30],eps,cost)
+		sQuest(3,[1,10],eps,cost)
 
 	# print 'doing cars'
 	# for count in [100,200,300,400,500]:
