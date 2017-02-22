@@ -27,6 +27,7 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 			ax = areadict[q[0]]
 			if ax not in g:
 				g[ax] = []
+				q2id_g[ax] = []
 			g[ax].append(q)
 			q2id_g[ax].append(qi)
 		else:

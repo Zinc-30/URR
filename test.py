@@ -53,7 +53,7 @@ def task(method,cost,quests,cars,utility,sim,paras,k):
 def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
-	for i in range(5):
+	for i in [3,4,1,2,0]:
 		ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 		res.append(time)
 		res.append(sumu)
