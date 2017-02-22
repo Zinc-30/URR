@@ -59,7 +59,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
 	for i in range(6):
-		if i!=7:
+		if i!=0 and i!=2:
 			ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 			Riders = set()
 			for s in ans:
@@ -92,7 +92,6 @@ def test_main():
 	sim = rd.readSim(3,3)
 	k = 10
 	paras = [0.33,0.33]
-
 	jobs.append(job_server.submit(test,('test-default',cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
@@ -105,7 +104,7 @@ def test_main():
 	paras = [0.33,0.33]
 
 	# test quest num
-	for count in [1]:
+	for count in [1,5,8,10]:
 		quests = rd.readQuests(count,1,1.5)
 		utility = rd.readUtility(count,200)
 		sim = rd.readSim(count,count)
@@ -122,14 +121,15 @@ def test_main():
 		jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-
+	quests = rd.readQuests(3,1,1.5)
+	
 	# test quest eps
 	for eps in [1.2,1.7,2.0]:
 		quests = rd.readQuests(3,1,eps)
 		jobs.append(job_server.submit(test,('test-rider_eps='+str(eps),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-
+	quests = rd.readQuests(3,1,1.5)
 
 	# test car num
 	for count in [100,300,400,500]:
