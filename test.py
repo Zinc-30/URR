@@ -91,7 +91,9 @@ def test_main():
 	utility = rd.readUtility(3,200)
 	sim = rd.readSim(3,3)
 	k = 10
-	paras = [0.33,0.33]
+	# paras = [0.33,0.33]
+	paras = [0,1]
+
 
 	# jobs.append(job_server.submit(test,('test-default',cost,quests,cars,utility,sim,k,paras),(task,),\
 	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
