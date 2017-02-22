@@ -89,7 +89,7 @@ def sCars(num,room,nodes):
 	return cars
 def sQuest(count,pt,eps,cost):
 	# =================================
-	df = pd.read_csv('chicago/'+str(count)+'K_trips.csv')
+	df = pd.read_csv('chicago/CHICAGO_'+str(count)+'K_trips.csv')
 	quest = []
 	# =================================
 	for rid in range(len(df)):
