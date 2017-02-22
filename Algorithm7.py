@@ -22,7 +22,8 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 	q2id_rest = []
 	for qi in range(len(quests)):
 		q = quests[qi]
-		if q[0] in areadict and q[3] in areadict and areadict[q[0]] == areadict[q[3]]:
+		# if q[0] in areadict and q[3] in areadict and areadict[q[0]] == areadict[q[3]]:
+		if q[0] in areadict and rd.getCost(q[0],q[3],cost)<20:
 			ax = areadict[q[0]]
 			if ax not in g:
 				g[ax] = []
