@@ -87,7 +87,7 @@ def test_main():
 
 	# test defult
 	cars = rd.readCars(200,3)
-	quests = rd.readQuests(3,10,1.5)
+	quests = rd.readQuests(3,1,1.5)
 	utility = rd.readUtility(3,200)
 	sim = rd.readSim(3,3)
 	k = 10
@@ -105,18 +105,18 @@ def test_main():
 
 	# test quest num
 	for count in [1,5,8,10]:
-		quests = rd.readQuests(count,10,1.5)
+		quests = rd.readQuests(count,1,1.5)
 		utility = rd.readUtility(count,200)
 		sim = rd.readSim(count,count)
 		jobs.append(job_server.submit(test,('test-rider_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	quests = rd.readQuests(3,10,1.5)
+	quests = rd.readQuests(3,1,1.5)
 	utility = rd.readUtility(3,200)
 	sim = rd.readSim(3,3)
 
 	# test quest pt
-	for pt in [[1,10],[30,60]]:
+	for pt in [[10,30],[30,60]]:
 		quests = rd.readQuests(3,pt[0],1.5)
 		jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
@@ -124,7 +124,7 @@ def test_main():
 
 	# test quest eps
 	for eps in [1.2,1.7,2.0]:
-		quests = rd.readQuests(3,10,eps)
+		quests = rd.readQuests(3,1,eps)
 		jobs.append(job_server.submit(test,('test-rider_eps='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
