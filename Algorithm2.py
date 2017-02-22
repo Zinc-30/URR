@@ -82,7 +82,7 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 				else:
 					rid = ri
 				u_now = rd.cal_u_car(cid,S[cid],utility,sim,cost,quests_all,paras)
-				tmps1 = a1.ScheduleSingleRequest(S[cid],cars[cid],quests[ri],rid)
+				tmps1 = a1.ScheduleSingleRequest(S[cid],cars[ci],quests[ri],rid)
 				if tmps1:
 					u_after = rd.cal_u_car(cid,tmps1,utility,sim,cost,quests_all,paras)
 					if u_after-u_now > max_u:
@@ -96,7 +96,7 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 					riders_inS = findRiders(S[cid])
 					for qi in riders_inS:
 						tmps1 = moveRider(S[cid],qi,cost)
-						tmps2 = a1.ScheduleSingleRequest(tmps1,cars[cid],quests[ri],rid)
+						tmps2 = a1.ScheduleSingleRequest(tmps1,cars[ci],quests[ri],rid)
 						if tmps2:
 							u_after = rd.cal_u_car(cid,tmps2,utility,sim,cost,quests_all,paras)
 							if u_after-u_now > max_u:
