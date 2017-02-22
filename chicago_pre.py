@@ -22,7 +22,7 @@ def sNodes(filename):
 		nodes.append([int(tmps[1]),int(tmps[2])])
 	return nodeid,nodes
 
-def get_nodes_trip(limit,filename,nodes,nodeid):
+def get_nodes_trip():
 	select_df = pd.read_csv('chicago/trip.csv')
 	print select_df.info()
 	return set(select_df['x']) | set(select_df['y'])
@@ -104,13 +104,12 @@ def sQuest(count,pt,eps,cost):
 
 def pre_main_data():
 	limit = 1000
-	node_file = 'chicago/chicago_points.csv'
+	# node_file = 'chicago/chicago_points.csv'
 	graph_file = 'chicago/chicago_roads.csv'
-	trip_file = 'chicago/2K_trips_chicago.csv'
+	# trip_file = 'chicago/2K_trips_chicago.csv'
 	# request_file = 'data/50_select_nodes.csv'
-	nodesid,nodes= sNodes(node_file)
 	# print nodes
-	nodes_set = get_nodes_trip(limit,trip_file,nodes,nodesid)
+	nodes_set = get_nodes_trip()
 	print "slect node num",len(nodes_set)
 	#=======================================================
 	cost = sRoad(limit,graph_file,nodes_set,1)
