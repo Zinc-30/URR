@@ -96,7 +96,7 @@ def sQuest(count,pt,eps,cost):
 		bnode = int(df.iloc[rid][0])
 		enode = int(df.iloc[rid][1])
 		timec = rd.getCost(bnode,enode,cost)
-		btime = random.randint(pt[0]*60,pt[1]*60)
+		btime = random.randint(pt[0]*10,pt[1]*10)
 		etime = btime + timec * eps
 		# print bnode,enode,timec,cost[bnode][enode]
 		quest.append([bnode,btime,etime,enode])
@@ -134,7 +134,7 @@ def pre_main_data():
 			
 	print 'doing similarity'
 	for nquest in [1,3]:
-		for nquest in [1,3,5,8,10]:
+		for nquest in [1,3]:
 			sim = [[random.random() for i in range(nquest*1000)] for j in range(nquest*1000)]
 			np.save('chicago/'+str(nquest)+'.'+str(nquest)+'-sim.npy',np.array(sim))
 

@@ -67,7 +67,7 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 	while questSet:
 		ri = random.sample(questSet, 1)[0]
 		questSet.remove(ri)
-		max_u = 0
+		max_u = -1
 		carid = -1
 		max_q = -1
 		max_s = []
