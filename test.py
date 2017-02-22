@@ -59,7 +59,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
 	for i in range(6):
-		if i==3:
+		if i==2:
 			ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 			Riders = set()
 			for s in ans:
@@ -125,7 +125,7 @@ def test_main():
 	# test quest eps
 	for eps in [1.2,1.7,2.0]:
 		quests = rd.readQuests(3,1,eps)
-		jobs.append(job_server.submit(test,('test-rider_eps='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
+		jobs.append(job_server.submit(test,('test-rider_eps='+str(eps),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 
