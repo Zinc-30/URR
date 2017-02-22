@@ -100,20 +100,26 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 						if tmps2:
 							u_after = rd.cal_u_car(cid,tmps2,utility,sim,cost,quests_all,paras)
 							if u_after-u_now > max_u:
+								if q2id:
+									if qi in q2id:
+										max_q = id2q[qi]
+									else:
+										continue
+								else:
+									max_q = qi
 								max_u = u_after-u_now
 								max_s = tmps2
 								carid = ci
+							elif u_after-u_now==max_u and rd.calCost(tmps2,cost)<rd.calCost(S[cid],cost):
 								if q2id:
-									max_q = id2q[qi]
+									if qi in q2id:
+										max_q = id2q[qi]
+									else:
+										continue
 								else:
 									max_q = qi
-							elif u_after-u_now==max_u and rd.calCost(tmps2,cost)<rd.calCost(S[cid],cost):
 								carid = ci
 								max_s = tmps2
-								if q2id:
-									max_q = id2q[qi]
-								else:
-									max_q = qi 
 		if carid>=0:
 			validmap[ri][carid] = 0
 			if c2id:
