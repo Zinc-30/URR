@@ -59,13 +59,19 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
 	for i in range(6):
-		ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
+		if i==3:
+			ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
+			Riders = set()
+			for s in ans:
+				for x in s:
+					Riders = Riders|x['riders']
+			sum_r = len(Riders)
+		else:
+			sumu = 0
+			time = 0
+			sumu = 0
 		res.append(time)
 		res.append(sumu)
-		Riders = set()
-		for x in ans:
-			Riders = Riders|x['riders']
-		sum_r = len(Riders)
 		res.append(sum_r)
 	s = pd.Series(res,index = ['2-time','2-u','2-r','3-time','3-u','3-r','2+group-time','2+group-u','2+group-r',\
 		'3+group-time','3+group-u','3+group-r''gt-time','gt-u','gt-r','gu-time','gu-u','gu-r'])
