@@ -65,7 +65,7 @@ def calCost(S,cost):
 
 def cal_u(cid,rid,S,s1,t1,utility,sim,cost,paras):
 	u1 = utility[rid][cid]
-	cost_all = calCost(S,cost)
+	cost_all = calCost(S,cost)+1
 	u2 = 0
 	cost_sum = 0
 	for x in S:
