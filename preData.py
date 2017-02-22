@@ -141,27 +141,30 @@ def pre_main_data():
 	cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
 	print 'doing riders'
+	pt = [1,10]
 	for count in [1,3,5,8,10]:
-		for pt in [[1,10],[10,30],[30,60]]:
-			sQuest(count,pt,1.5,cost)
-	for eps in [1.2,1.7,2.0]:
-		sQuest(3,[10,30],eps,cost)
+		sQuest(count,pt,1.5,cost)
+	for pt in [[10,30],[30,60]]:
+		sQuest(3,pt,1.5,cost)
 
-	print 'doing cars'
-	for count in [100,200,300,400,500]:
-		for room in [2,3,4,5]:
-			sCars(count,room,nodes_set)
-	print 'doing utility'
-	for ncars in [100,200,300,400,500]:
-		for nquest in [1,3,5,8,10]:
-			utility = [[random.random() for i in range(ncars)] for j in range(nquest*1000)]
-			np.save('data/'+str(nquest)+'.'+str(ncars)+'-utility.npy',np.array(utility))
+	for eps in [1.2,1.7,2.0]:
+		sQuest(3,[1,10],eps,cost)
+
+	# print 'doing cars'
+	# for count in [100,200,300,400,500]:
+	# 	for room in [2,3,4,5]:
+	# 		sCars(count,room,nodes_set)
+	# print 'doing utility'
+	# for ncars in [100,200,300,400,500]:
+	# 	for nquest in [1,3,5,8,10]:
+	# 		utility = [[random.random() for i in range(ncars)] for j in range(nquest*1000)]
+	# 		np.save('data/'+str(nquest)+'.'+str(ncars)+'-utility.npy',np.array(utility))
 			
-	print 'doing similarity'
-	for nquest in [1,3,5,8,10]:
-		for nquest in [1,3,5,8,10]:
-			sim = [[random.random() for i in range(nquest*1000)] for j in range(nquest*1000)]
-			np.save('data/'+str(nquest)+'.'+str(nquest)+'-sim.npy',np.array(sim))
+	# print 'doing similarity'
+	# for nquest in [1,3,5,8,10]:
+	# 	for nquest in [1,3,5,8,10]:
+	# 		sim = [[random.random() for i in range(nquest*1000)] for j in range(nquest*1000)]
+	# 		np.save('data/'+str(nquest)+'.'+str(nquest)+'-sim.npy',np.array(sim))
 
 
 def pre_toy_data():
