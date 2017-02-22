@@ -35,11 +35,11 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 			q2id_rest.append(qi)
 	gnew = sorted(g,key = lambda x:len(g[x]),reverse=1)
 	# S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest)
-	S = Algorithm2.bilateralArrangement(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest)
+	S = Algorithm2.bilateralArrangement(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest,quests_all = quests)
 	for c in gnew:
 		carc, carcid = purnCars(g[c],c,cars,areadict,radius,cost)
 		# S = Algorithm3.efficiencyGreedy(cost,carc,g[c],utility,S,sim,paras,c2id = carcid,q2id = q2id_g[c])
-		S = Algorithm2.bilateralArrangement(cost,carc,g[c],utility,S,sim,paras,c2id = carcid,q2id = q2id_rest)
+		S = Algorithm2.bilateralArrangement(cost,carc,g[c],utility,S,sim,paras,c2id = carcid,q2id = q2id_rest,quests_all = quests)
 	return S
 
 

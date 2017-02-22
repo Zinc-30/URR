@@ -52,11 +52,13 @@ def moveRider(Sc,ri,cost):
 				S.reverse()
 	return S
 
-def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=None):
+def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=None,quests_all=None):
 	# tmpU = [[[u,ri] for (ri,u) in enumerate(rider)] for rider in utility]
 	# carList = []
 	# for li in tmpU:
 	# 	carList.append(sorted(li, key= lambda x:x[0],reverse=True))
+	if not quests_all:
+		quests_all = quests
 	validmap = [[1 for i in range(len(cars))] for j in range(len(quests))]
 	questSet = set(range(len(quests)))
 	a1 = Algo1(cost)
@@ -79,10 +81,10 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 					rid = q2id[ri]
 				else:
 					rid = ri
-				u_now = rd.cal_u_car(cid,S[cid],utility,sim,cost,quests,paras)
+				u_now = rd.cal_u_car(cid,S[cid],utility,sim,cost,quests_all,paras)
 				tmps1 = a1.ScheduleSingleRequest(S[cid],cars[cid],quests[ri],rid)
 				if tmps1:
-					u_after = rd.cal_u_car(cid,tmps1,utility,sim,cost,quests,paras)
+					u_after = rd.cal_u_car(cid,tmps1,utility,sim,cost,quests_all,paras)
 					if u_after-u_now > max_u:
 						max_u = u_after-u_now
 						carid = ci
@@ -96,7 +98,7 @@ def bilateralArrangement(cost,cars,quests,utility,S,sim,paras,c2id=None, q2id=No
 						tmps1 = moveRider(S[cid],qi,cost)
 						tmps2 = a1.ScheduleSingleRequest(tmps1,cars[cid],quests[ri],rid)
 						if tmps2:
-							u_after = rd.cal_u_car(cid,tmps2,utility,sim,cost,quests,paras)
+							u_after = rd.cal_u_car(cid,tmps2,utility,sim,cost,quests_all,paras)
 							if u_after-u_now > max_u:
 								max_u = u_after-u_now
 								max_s = tmps2
