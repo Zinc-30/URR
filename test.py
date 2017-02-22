@@ -59,7 +59,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 	# print "==============",numq,numc,pt,roomc,"============" 
 	res = []
 	for i in range(6):
-		if i!=7:
+		if i==3:
 			ans,time,sumu = task(i,cost,quests,cars,utility,sim,paras,k)
 			Riders = set()
 			for s in ans:
