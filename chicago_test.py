@@ -86,10 +86,10 @@ def test_main():
 	job_server = pp.Server(ncores)
 
 	# test defult
-	cars = rd.readCars(200,3)
-	quests = rd.readQuests(3,1,1.5)
-	utility = rd.readUtility(3,200)
-	sim = rd.readSim(3,3)
+	cars = rd.readCars(200,3,'chicago/')
+	quests = rd.readQuests(3,1,1.5,'chicago/')
+	utility = rd.readUtility(3,200,'chicago/')
+	sim = rd.readSim(3,3,'chicago/')
 	k = 10
 	paras = [0.33,0.33]
 
@@ -106,26 +106,26 @@ def test_main():
 
 	# test quest num
 	for count in [1]:
-		quests = rd.readQuests(count,1,1.5)
-		utility = rd.readUtility(count,200)
+		quests = rd.readQuests(count,1,1.5,'chicago/')
+		utility = rd.readUtility(count,200,'chicago/')
 		sim = rd.readSim(count,count)
 		jobs.append(job_server.submit(test,('test-rider_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	quests = rd.readQuests(3,1,1.5)
-	utility = rd.readUtility(3,200)
-	sim = rd.readSim(3,3)
+	quests = rd.readQuests(3,1,1.5,'chicago/')
+	utility = rd.readUtility(3,200,'chicago/')
+	sim = rd.readSim(3,3,'chicago/')
 
 	# test quest pt
 	for pt in [[10,30],[30,60]]:
-		quests = rd.readQuests(3,pt[0],1.5)
+		quests = rd.readQuests(3,pt[0],1.5,'chicago/')
 		jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 
 	# test quest eps
 	for eps in [1.2,1.7,2.0]:
-		quests = rd.readQuests(3,1,eps)
+		quests = rd.readQuests(3,1,eps,'chicago/')
 		jobs.append(job_server.submit(test,('test-rider_eps='+str(eps),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
@@ -133,17 +133,17 @@ def test_main():
 
 	# test car num
 	for count in [100,300,400,500]:
-		cars = rd.readCars(count,3)
-		utility = rd.readUtility(3,count)
+		cars = rd.readCars(count,3,'chicago/')
+		utility = rd.readUtility(3,count,'chicago/')
 		jobs.append(job_server.submit(test,('test-car_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	cars = rd.readCars(200,3)
-	utility = rd.readUtility(3,200)	
+	cars = rd.readCars(200,3,'chicago/')
+	utility = rd.readUtility(3,200,'chicago/')	
 
 	# test car room
 	for room in [2,4,5]:
-		cars = rd.readCars(200,room)
+		cars = rd.readCars(200,room,'chicago/')
 		jobs.append(job_server.submit(test,('test-car_room='+str(room),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))

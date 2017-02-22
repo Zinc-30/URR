@@ -21,31 +21,31 @@ def readCost(fname='data/cost.npy'):
 		print 'no cost data'
 	return cost
 
-def readQuests(numQ,pt,eps):
-	filename = 'data/'+str(numQ)+'.'+str(pt)+'.'+str(eps)+'-quests.npy'
+def readQuests(numQ,pt,eps,fname='data/'):
+	filename = fname+str(numQ)+'.'+str(pt)+'.'+str(eps)+'-quests.npy'
 	if os.path.exists(filename):
 		print 'read request data'
 		return np.load(filename).tolist()
 	else:
 		print 'no request data'
 
-def readCars(numC,roomC):
-	filename = 'data/'+str(numC)+'.'+str(roomC)+'-cars.npy'
+def readCars(numC,roomC,fname='data/'):
+	filename = fname+str(numC)+'.'+str(roomC)+'-cars.npy'
 	if os.path.exists(filename):
 		print 'read cars data'
 		return np.load(filename).tolist()
 	else:
 		print 'no cars data'
 
-def readUtility(numQ,numC):
-	filename = 'data/'+str(numQ)+'.'+str(numC)+'-utility.npy'
+def readUtility(numQ,numC,fname='data/'):
+	filename = fname+str(numQ)+'.'+str(numC)+'-utility.npy'
 	if os.path.exists(filename):
 		print 'read utility data'
 		return np.load(filename).tolist()
 	else:
 		print 'no utility data'
-def readSim(numQ,numQ1):
-	filename = 'data/'+str(numQ)+'.'+str(numQ1)+'-sim.npy'
+def readSim(numQ,numQ1,fname='data/'):
+	filename = fname+str(numQ)+'.'+str(numQ1)+'-sim.npy'
 	if os.path.exists(filename):
 		print 'read sim data'
 		return np.load(filename).tolist()
@@ -93,6 +93,8 @@ def cal_u_all(S,utility,sim,cost,quests,paras):
 	for i in range(len(S)):
 		ans += cal_u_car(i,S[i],utility,sim,cost,quests,paras)
 	return ans
+
+
 
 # def getG():
 # 	G = nx.Graph()
