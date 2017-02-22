@@ -53,6 +53,8 @@ def readSim(numQ,numQ1,fname='data/'):
 		print 'no sim data'
 def getCost(x,y,cost):
 	if x in cost and y in cost[x]:
+		if cost[x][y] ==0:
+			return 1
 		return cost[x][y]
 	else:
 		return 1000000
