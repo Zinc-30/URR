@@ -93,18 +93,16 @@ def test_main():
 	k = 10
 	paras = [0.33,0.33]
 
-
-
-	# jobs.append(job_server.submit(test,('test-default',cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	jobs.append(job_server.submit(test,('test-default',cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 	
-	# # test paras
-	# for paras in [[1,0],[0,0],[0,1]]:
-	# 	jobs.append(job_server.submit(test,('test-para='+str(paras),cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	# paras = [0.33,0.33]
+	# test paras
+	for paras in [[1,0],[0,0],[0,1]]:
+		jobs.append(job_server.submit(test,('test-para='+str(paras),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	paras = [0.33,0.33]
 
 	# test quest num
 	for count in [1]:
@@ -114,41 +112,41 @@ def test_main():
 		jobs.append(job_server.submit(test,('test-rider_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
 		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
 			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	# quests = rd.readQuests(3,1,1.5)
-	# utility = rd.readUtility(3,200)
-	# sim = rd.readSim(3,3)
+	quests = rd.readQuests(3,1,1.5)
+	utility = rd.readUtility(3,200)
+	sim = rd.readSim(3,3)
 
-	# # test quest pt
-	# for pt in [[10,30],[30,60]]:
-	# 	quests = rd.readQuests(3,pt[0],1.5)
-	# 	jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	# test quest pt
+	for pt in [[10,30],[30,60]]:
+		quests = rd.readQuests(3,pt[0],1.5)
+		jobs.append(job_server.submit(test,('test-rider_pt='+str(pt),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 
-	# # test quest eps
-	# for eps in [1.2,1.7,2.0]:
-	# 	quests = rd.readQuests(3,1,eps)
-	# 	jobs.append(job_server.submit(test,('test-rider_eps='+str(eps),cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	# test quest eps
+	for eps in [1.2,1.7,2.0]:
+		quests = rd.readQuests(3,1,eps)
+		jobs.append(job_server.submit(test,('test-rider_eps='+str(eps),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 
 
-	# # test car num
-	# for count in [100,300,400,500]:
-	# 	cars = rd.readCars(count,3)
-	# 	utility = rd.readUtility(3,count)
-	# 	jobs.append(job_server.submit(test,('test-car_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
-	# cars = rd.readCars(200,3)
-	# utility = rd.readUtility(3,200)	
+	# test car num
+	for count in [100,300,400,500]:
+		cars = rd.readCars(count,3)
+		utility = rd.readUtility(3,count)
+		jobs.append(job_server.submit(test,('test-car_num='+str(count),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	cars = rd.readCars(200,3)
+	utility = rd.readUtility(3,200)	
 
-	# # test car room
-	# for room in [2,4,5]:
-	# 	cars = rd.readCars(200,room)
-	# 	jobs.append(job_server.submit(test,('test-car_room='+str(room),cost,quests,cars,utility,sim,k,paras),(task,),\
-	# 	('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
-	# 		'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
+	# test car room
+	for room in [2,4,5]:
+		cars = rd.readCars(200,room)
+		jobs.append(job_server.submit(test,('test-car_room='+str(room),cost,quests,cars,utility,sim,k,paras),(task,),\
+		('import os','from time import clock','import numpy as np','import pandas as pd','import readData as rd',\
+			'import baseline_cost','import baseline_utility','import Algorithm2 as A2','import Algorithm3 as A3','import Algorithm6 as A6','import Algorithm7 as A7')))
 
 	for job in jobs:
 		job_name,job_ans = job()
