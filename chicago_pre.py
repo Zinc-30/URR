@@ -96,7 +96,7 @@ def sQuest(count,pt,eps,cost):
 		bnode = int(df.iloc[rid][0])
 		enode = int(df.iloc[rid][1])
 		timec = rd.getCost(bnode,enode,cost)
-		btime = random.randint(pt[0]*300,pt[1]*300)
+		btime = random.randint(pt[0]*60,pt[1]*60)
 		etime = btime + timec * eps
 		# print bnode,enode,timec,cost[bnode][enode]
 		quest.append([bnode,btime,etime,enode])
