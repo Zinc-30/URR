@@ -69,7 +69,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 		else:
 			sumu = 0
 			time = 0
-			sumu = 0
+			sum_r = 0
 		res.append(time)
 		res.append(sumu)
 		res.append(sum_r)
