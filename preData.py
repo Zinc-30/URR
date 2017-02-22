@@ -122,7 +122,7 @@ def sQuest(count,pt,eps,cost):
 		bnode = int(df.iloc[rid][0])
 		enode = int(df.iloc[rid][1])
 		timec = rd.getCost(bnode,enode,cost)
-		btime = random.randint(pt[0],pt[1])
+		btime = random.randint(pt[0]*5,pt[1]*5)
 		etime = btime + timec * eps
 		# print bnode,enode,timec,cost[bnode][enode]
 		quest.append([bnode,btime,etime,enode])
@@ -141,14 +141,14 @@ def pre_main_data():
 	cost = sRoad(limit,graph_file,nodes_set,1)
 	#======================================================
 	print 'doing riders'
-	pt = [1,10]
+	pt = [10,30]
 	for count in [1,3,5,8,10]:
 		sQuest(count,pt,1.5,cost)
 	for pt in [[10,30],[30,60]]:
 		sQuest(3,pt,1.5,cost)
 
 	for eps in [1.2,1.7,2.0]:
-		sQuest(3,[1,10],eps,cost)
+		sQuest(3,[10,30],eps,cost)
 
 	# print 'doing cars'
 	# for count in [100,200,300,400,500]:
