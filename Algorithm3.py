@@ -2,7 +2,9 @@ from Algorithm1 import Algo1
 import readData as rd
 
 
-def efficiencyGreedy(cost, cars, quests, utility, S, sim, paras, c2id=None, q2id=None):
+def efficiencyGreedy(cost, cars, quests, utility, S, sim, paras, c2id=None, q2id=None,quests_all = None):
+    if not quests_all:
+        quests_all = quests
     pairSet = []
     a1 = Algo1(cost)
     for qi in range(len(quests)):
@@ -16,21 +18,29 @@ def efficiencyGreedy(cost, cars, quests, utility, S, sim, paras, c2id=None, q2id
             else:
                 qid = qi
             tmpS = a1.ScheduleSingleRequest(
-                S[cid], cars[cid], quests[qid], qid)
+                S[cid], cars[ci], quests[qi], qid)
             if tmpS:
                 cost1 = rd.calCost(S[cid], cost)
                 cost2 = rd.calCost(tmpS, cost)
                 u0 = rd.cal_u_car(cid, S[cid], utility,
-                                  sim, cost, quests, paras)
-                u1 = rd.cal_u_car(cid, tmpS, utility, sim, cost, quests, paras)
+                                  sim, cost, quests_all, paras)
+                u1 = rd.cal_u_car(cid, tmpS, utility, sim, cost, quests_all, paras)
                 pairSet.append(
-                    [qid, cid, (u1 - u0) * 1.0 / (cost2 - cost1 + 0.001)])
+                    [qi, ci, (u1 - u0) * 1.0 / (cost2 - cost1 + 0.001)])
     pairSet = sorted(pairSet, key=lambda x: x[2], reverse=True)
     while pairSet:
         # print pairSet
         qi = pairSet[0][0]
         ci = pairSet[0][1]
-        S[ci] = a1.ScheduleSingleRequest(S[ci], cars[ci], quests[qi], qi)
+        if c2id:
+            cid = c2id[ci]
+        else:
+            cid = ci
+        if q2id:
+            qid = q2id[qi]
+        else:
+            qid = qi
+        S[cid] = a1.ScheduleSingleRequest(S[cid], cars[ci], quests[qi], qid)
         # print S[ci]
         del pairSet[0]
         # print "qi,ci",qi,ci
@@ -39,15 +49,17 @@ def efficiencyGreedy(cost, cars, quests, utility, S, sim, paras, c2id=None, q2id
                 del pairSet[i]
                 continue
             if pairSet[i][1] == ci:
+                if q2id:
+                    qid1 = q2id[pairSet[i][0]]
+                else:
+                    qid1 = pairSet[i][0]
                 tmpS = a1.ScheduleSingleRequest(
-                    S[ci], cars[ci], quests[pairSet[i][0]], pairSet[i][0])
+                    S[cid], cars[ci], quests[pairSet[i][0]], qid1)
                 if tmpS:
-                    cost1 = rd.calCost(S[ci], cost)
+                    cost1 = rd.calCost(S[cid], cost)
                     cost2 = rd.calCost(tmpS, cost)
-                    u0 = rd.cal_u_car(
-                        ci, S[ci], utility, sim, cost, quests, paras)
-                    u1 = rd.cal_u_car(ci, tmpS, utility, sim,
-                                      cost, quests, paras)
+                    u0 = rd.cal_u_car(cid, S[cid], utility, sim, cost, quests_all, paras)
+                    u1 = rd.cal_u_car(cid, tmpS, utility, sim, cost, quests_all, paras)
                     pairSet[i][2] = (u1 - u0) * 1.0 / (cost2 - cost1 + 0.01)
                 else:
                     del pairSet[i]
