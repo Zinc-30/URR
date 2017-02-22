@@ -33,6 +33,7 @@ def groupScheduling(cost,cars,quests,utility,S,areadict,radius,sim,paras):
 			grest.append(q)
 			q2id_rest.append(qi)
 	gnew = sorted(g,key = lambda x:len(g[x]),reverse=1)
+	print 'non-divided request num:',len(grest)
 	S = Algorithm3.efficiencyGreedy(cost,cars,grest,utility,S,sim,paras,q2id = q2id_rest,quests_all=quests)
 	for c in gnew:
 		carc, carcid = purnCars(g[c],c,cars,areadict,radius,cost)
