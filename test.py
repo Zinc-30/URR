@@ -74,7 +74,7 @@ def test(testname,cost,quests,cars,utility,sim,k,paras):
 		res.append(sumu)
 		res.append(sum_r)
 	s = pd.Series(res,index = ['2-time','2-u','2-r','3-time','3-u','3-r','2+group-time','2+group-u','2+group-r',\
-		'3+group-time','3+group-u','3+group-r''gt-time','gt-u','gt-r','gu-time','gu-u','gu-r'])
+		'3+group-time','3+group-u','3+group-r','gt-time','gt-u','gt-r','gu-time','gu-u','gu-r'])
 	s.to_csv('data/'+testname+'.csv')
 	return testname,s
 
